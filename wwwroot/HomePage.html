@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Users Home Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #usersContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+            .user-card img {
+                width: 120px;
+                height: 120px;
+                object-fit: cover;
+                border-radius: 50%;
+                border: 2px solid #ddd;
+                margin-bottom: 12px;
+            }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .user-id {
+            color: #666;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        .message {
+            text-align: center;
+            color: #666;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Users</h1>
+
+    <div id="message" class="message">Loading users...</div>
+    <div id="usersContainer"></div>
+
+    <script>
+        const usersContainer = document.getElementById("usersContainer");
+        const message = document.getElementById("message");
+
+        const fallbackImage = "https://via.placeholder.com/120?text=No+Image";
+
+        async function loadUsers() {
+            try {
+                const response = await fetch("/api/User");
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch users. Status: ${response.status}`);
+                }
+
+                const users = await response.json();
+
+                if (!Array.isArray(users)) {
+                    throw new Error("GET /api/User did not return an array. Fix backend or Swagger contract.");
+                }
+
+                if (users.length === 0) {
+                    message.textContent = "No users found.";
+                    return;
+                }
+
+                message.style.display = "none";
+
+                for (const user of users) {
+                    const card = document.createElement("div");
+                    card.className = "user-card";
+
+                    const img = document.createElement("img");
+                    img.src = `/api/User/${user.id}/profile-picture`;
+                    img.alt = `${user.username}'s profile picture`;
+                    img.onerror = function () {
+                        this.onerror = null;
+                        this.src = fallbackImage;
+                    };
+
+                    const name = document.createElement("div");
+                    name.className = "user-name";
+                    name.textContent = user.username ?? "Unknown User";
+
+                    const id = document.createElement("div");
+                    id.className = "user-id";
+                    id.textContent = `User ID: ${user.id}`;
+
+                    card.appendChild(img);
+                    card.appendChild(name);
+                    card.appendChild(id);
+
+                    usersContainer.appendChild(card);
+                }
+            } catch (error) {
+                message.textContent = error.message;
+            }
+        }
+
+        loadUsers();
+    </script>
+</body>
+</html>
