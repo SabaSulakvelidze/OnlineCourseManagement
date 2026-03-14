@@ -35,6 +35,13 @@ namespace OnlineCourseManagement.Service
 
             var user = mapper.Map<User>(request);
 
+            var defaultImagePath = Path.Combine("Assets", "defaultProfilePicture.png");
+            var imageBytes = await File.ReadAllBytesAsync(defaultImagePath);
+
+            user.ProfileImage = imageBytes;
+            user.ProfileImageFileName = "defaultProfilePicture.png";
+            user.ProfileImageContentType = "image/png";
+
             context.Users.Add(user);
             await context.SaveChangesAsync();
 
