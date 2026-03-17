@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using FinalProject.Models.Requests;
 using FinalProject.Models.Responses;
+using Microsoft.Identity.Client;
 using OnlineCourseManagement.Models;
 
 namespace FinalProject.Mappers
 {
-    public class UserMapping:Profile
+    public class UserMapping : Profile
     {
         public UserMapping()
         {

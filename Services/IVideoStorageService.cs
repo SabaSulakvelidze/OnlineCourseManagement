@@ -1,7 +1,9 @@
-﻿namespace OnlineCourseManagement.Services
+﻿using OnlineCourseManagement.Models.Responses;
+
+namespace OnlineCourseManagement.Services
 {
     public interface IVideoStorageService
     {
-        Task<string> UploadVideoAsync(IFormFile file, CancellationToken cancellationToken = default);
+        Task<VideoUploadResponse> UploadVideoAsync(IFormFile file, CancellationToken cancellationToken = default);
     }
 }

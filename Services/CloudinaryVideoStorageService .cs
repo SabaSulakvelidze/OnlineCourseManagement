@@ -2,6 +2,7 @@
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Options;
 using OnlineCourseManagement.CloudeStorage;
+using OnlineCourseManagement.Models.Responses;
 
 namespace OnlineCourseManagement.Services
 {
@@ -22,12 +23,11 @@ namespace OnlineCourseManagement.Services
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<string> UploadVideoAsync(IFormFile file, CancellationToken cancellationToken = default)
+        public async Task<VideoUploadResponse> UploadVideoAsync(IFormFile file, CancellationToken cancellationToken = default)
         {
             if (file == null || file.Length == 0)
                 throw new ArgumentException("File is empty.");
 
-            // Optional backend validation
             var allowedExtensions = new[] { ".mp4", ".mov", ".avi", ".mkv", ".webm" };
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
@@ -36,11 +36,13 @@ namespace OnlineCourseManagement.Services
 
             await using var stream = file.OpenReadStream();
 
+            var publicId = Guid.NewGuid().ToString();
+
             var uploadParams = new VideoUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
                 Folder = "course-videos",
-                PublicId = Guid.NewGuid().ToString(),
+                PublicId = publicId,
                 Overwrite = false
             };
 
@@ -49,8 +51,11 @@ namespace OnlineCourseManagement.Services
             if (uploadResult.Error != null)
                 throw new Exception($"Cloudinary upload failed: {uploadResult.Error.Message}");
 
-            return uploadResult.SecureUrl?.ToString()
-                   ?? throw new Exception("Cloudinary did not return a secure URL.");
+            return new VideoUploadResponse(
+                uploadResult.SecureUrl?.ToString()
+                    ?? throw new Exception("Cloudinary did not return a secure URL."),
+                uploadResult.PublicId
+            );
         }
     }
 }
