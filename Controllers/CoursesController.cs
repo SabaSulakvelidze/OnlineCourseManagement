@@ -11,7 +11,7 @@ namespace OnlineCourseManagement.Controllers
     public class CoursesController(ICourseService courseService) : ControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult<CourseResponse>> Create([FromBody] CreateCourseRequest request)
+        public async Task<ActionResult<CourseResponse>> Create(CreateCourseRequest request)
         {
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
@@ -27,7 +27,7 @@ namespace OnlineCourseManagement.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<CourseResponse>> GetById(int id)
         {
             var result = await courseService.GetByIdAsync(id);
@@ -37,8 +37,8 @@ namespace OnlineCourseManagement.Controllers
             return Ok(result);
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult<CourseResponse>> Update(int id, [FromBody] UpdateCourseRequest request)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<CourseResponse>> Update(int id, UpdateCourseRequest request)
         {
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
@@ -50,7 +50,7 @@ namespace OnlineCourseManagement.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await courseService.DeleteAsync(id);

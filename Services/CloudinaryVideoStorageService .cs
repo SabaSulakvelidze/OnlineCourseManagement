@@ -8,7 +8,7 @@ namespace OnlineCourseManagement.Services
 {
     public class CloudinaryVideoStorageService : IVideoStorageService
     {
-        private readonly Cloudinary _cloudinary;
+        private readonly Cloudinary cloudinary;
 
         public CloudinaryVideoStorageService(IOptions<CloudinarySettings> options)
         {
@@ -20,7 +20,7 @@ namespace OnlineCourseManagement.Services
                 settings.ApiSecret
             );
 
-            _cloudinary = new Cloudinary(account);
+            cloudinary = new Cloudinary(account);
         }
 
         public async Task<VideoUploadResponse> UploadVideoAsync(IFormFile file, CancellationToken cancellationToken = default)
@@ -46,7 +46,7 @@ namespace OnlineCourseManagement.Services
                 Overwrite = false
             };
 
-            var uploadResult = await _cloudinary.UploadAsync(uploadParams, cancellationToken);
+            var uploadResult = await cloudinary.UploadAsync(uploadParams, cancellationToken);
 
             if (uploadResult.Error != null)
                 throw new Exception($"Cloudinary upload failed: {uploadResult.Error.Message}");
@@ -56,6 +56,41 @@ namespace OnlineCourseManagement.Services
                     ?? throw new Exception("Cloudinary did not return a secure URL."),
                 uploadResult.PublicId
             );
+        }
+
+        public async Task<List<VideoUploadResponse>> GetAllVideos(CancellationToken cancellationToken = default)
+        {
+            var allVideos = new List<VideoUploadResponse>();
+            string? nextCursor = null;
+
+            do
+            {
+                var parameters = new ListResourcesByPrefixParams
+                {
+                    ResourceType = ResourceType.Video,
+                    Type = "upload",
+                    Prefix = "course-videos/",
+                    MaxResults = 100,
+                    NextCursor = nextCursor
+                };
+
+                var result = await cloudinary.ListResourcesAsync(parameters);
+
+                if (result.Error != null)
+                    throw new Exception($"Cloudinary fetch failed: {result.Error.Message}");
+
+                allVideos.AddRange(
+                    result.Resources.Select(video => new VideoUploadResponse(
+                        video.SecureUrl?.ToString() ?? string.Empty,
+                        video.PublicId
+                    ))
+                );
+
+                nextCursor = result.NextCursor;
+
+            } while (!string.IsNullOrWhiteSpace(nextCursor));
+
+            return allVideos;
         }
     }
 }

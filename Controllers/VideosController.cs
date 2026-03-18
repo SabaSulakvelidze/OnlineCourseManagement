@@ -22,5 +22,13 @@ namespace OnlineCourseManagement.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<ActionResult<VideoUploadResponse>> GetAllVideos(CancellationToken cancellationToken)
+        {
+            var result = await service.GetAllVideos(cancellationToken);
+
+            return Ok(result);
+        }
     }
 }

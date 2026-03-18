@@ -10,7 +10,7 @@ namespace OnlineCourseManagement.Controllers
     public class LecturesController(ILectureService lectureService) : ControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult<LectureResponse>> Create([FromBody] CreateLectureRequest request)
+        public async Task<ActionResult<LectureResponse>> Create(CreateLectureRequest request)
         {
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
@@ -29,7 +29,7 @@ namespace OnlineCourseManagement.Controllers
             }
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<LectureResponse>> GetById(int id)
         {
             var result = await lectureService.GetByIdAsync(id);
@@ -39,15 +39,15 @@ namespace OnlineCourseManagement.Controllers
             return Ok(result);
         }
 
-        [HttpGet("by-course/{courseId:int}")]
+        [HttpGet("by-course/{courseId}")]
         public async Task<ActionResult<List<LectureResponse>>> GetByCourseId(int courseId)
         {
             var result = await lectureService.GetByCourseIdAsync(courseId);
             return Ok(result);
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult<LectureResponse>> Update(int id, [FromBody] UpdateLectureRequest request)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<LectureResponse>> Update(int id, UpdateLectureRequest request)
         {
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
@@ -66,7 +66,7 @@ namespace OnlineCourseManagement.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await lectureService.DeleteAsync(id);
@@ -77,7 +77,7 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpPost("videos")]
-        public async Task<ActionResult<LectureVideoResponse>> AddVideo([FromBody] AddLectureVideoRequest request)
+        public async Task<ActionResult<LectureVideoResponse>> AddVideo(AddLectureVideoRequest request)
         {
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
