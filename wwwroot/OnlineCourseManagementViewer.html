@@ -1,448 +1,498 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Online Course Management Viewer</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Courses and Lectures Viewer</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             font-family: Arial, sans-serif;
+            background: #f7f8fc;
             margin: 0;
-            background: #f4f6f9;
-            color: #222;
+            padding: 24px;
+            color: #1f2937;
         }
-
-        header {
-            background: #1f2937;
-            color: white;
-            padding: 20px;
-        }
-
-            header h1 {
-                margin: 0 0 10px;
-                font-size: 28px;
-            }
-
-            header p {
-                margin: 0;
-                opacity: 0.9;
-            }
 
         .container {
             max-width: 1200px;
-            margin: 24px auto;
-            padding: 0 16px;
+            margin: 0 auto;
         }
 
-        .panel {
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtext {
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        .section {
             background: white;
-            border-radius: 10px;
-            padding: 16px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-radius: 14px;
+            padding: 20px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
+            .section h2 {
+                margin-top: 0;
+                margin-bottom: 16px;
+            }
+
+        .endpoint {
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 14px;
+            padding: 10px 12px;
+            background: #f3f4f6;
+            border-radius: 10px;
+            word-break: break-word;
         }
 
-        .section-title {
-            margin: 0 0 12px;
-            font-size: 20px;
-        }
-
-        .row {
+        .controls {
             display: flex;
-            gap: 10px;
             flex-wrap: wrap;
-            margin-bottom: 12px;
+            gap: 12px;
+            align-items: end;
+            margin-bottom: 16px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
         }
 
         input {
             padding: 10px 12px;
             border: 1px solid #d1d5db;
-            border-radius: 8px;
-            min-width: 120px;
-            flex: 1;
+            border-radius: 10px;
+            min-width: 220px;
+            font-size: 14px;
         }
 
         button {
-            padding: 10px 14px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             background: #2563eb;
             color: white;
+            font-size: 14px;
             cursor: pointer;
-            font-weight: 600;
         }
 
             button:hover {
                 background: #1d4ed8;
             }
 
-        .output {
-            background: #0f172a;
-            color: #e5e7eb;
-            padding: 12px;
-            border-radius: 8px;
-            overflow: auto;
-            min-height: 120px;
-            white-space: pre-wrap;
-            word-break: break-word;
+        .status {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .error {
+            color: #b91c1c;
+            font-weight: 600;
+        }
+
+        .success {
+            color: #065f46;
         }
 
         .list {
             display: grid;
-            gap: 12px;
+            gap: 14px;
+            margin-top: 18px;
         }
 
         .card {
             border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 12px;
-            background: #fafafa;
+            border-radius: 14px;
+            padding: 16px;
+            background: #ffffff;
         }
 
-            .card h4 {
-                margin: 0 0 8px;
-                color: #111827;
+            .card h3 {
+                margin-top: 0;
+                margin-bottom: 14px;
+                font-size: 18px;
             }
+
+        .rows {
+            display: grid;
+            gap: 8px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+            .row:last-child {
+                border-bottom: none;
+            }
+
+        .key {
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .value {
+            color: #111827;
+            word-break: break-word;
+        }
+
+        .nested {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+            .nested h4 {
+                margin-top: 0;
+                margin-bottom: 10px;
+            }
+
+        .nested-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
 
         .muted {
             color: #6b7280;
-            font-size: 14px;
         }
 
-        .video-item {
-            margin-top: 8px;
-            padding: 8px;
-            background: #eef2ff;
-            border-radius: 8px;
+        .empty {
+            padding: 14px;
+            background: #f9fafb;
+            border: 1px dashed #d1d5db;
+            border-radius: 10px;
+            color: #6b7280;
         }
 
-        .top-config {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 10px;
-            align-items: center;
-        }
-
-        @media (max-width: 640px) {
-            .top-config {
+        @media (max-width: 700px) {
+            .row {
                 grid-template-columns: 1fr;
+            }
+
+            input {
+                min-width: unset;
+                width: 100%;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            button {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Online Course Management Viewer</h1>
-        <p>Read-only HTML page for GET endpoints.</p>
-    </header>
-
     <div class="container">
-        <div class="panel">
-            <h2 class="section-title">API Configuration</h2>
-            <div class="top-config">
-                <input id="baseUrl" type="text" value="https://localhost:7163" placeholder="Enter API base URL" />
-                <button onclick="loadAllLists()">Load Main Lists</button>
-            </div>
-            <p class="muted">Set this to your API base URL. Example: <code>https://localhost:7163</code></p>
+        <h1>Courses and Lectures Viewer</h1>
+        <div class="subtext">
+            Base URL: <strong>https://localhost:7171</strong>
         </div>
 
-        <div class="grid">
-            <div class="panel">
-                <h2 class="section-title">GET /api/Courses</h2>
-                <div class="row">
-                    <button onclick="getCourses()">Load Courses</button>
-                </div>
-                <div id="coursesOutput" class="list"></div>
+        <!-- GET /api/Courses -->
+        <div class="section">
+            <h2>All Courses</h2>
+            <div class="endpoint">GET https://localhost:7171/api/Courses</div>
+
+            <div class="controls">
+                <button onclick="loadCourses()">Load Courses</button>
             </div>
 
-            <div class="panel">
-                <h2 class="section-title">GET /api/Courses/{id}</h2>
-                <div class="row">
-                    <input id="courseId" type="number" placeholder="Course ID" />
-                    <button onclick="getCourseById()">Load Course</button>
+            <div id="coursesStatus" class="status"></div>
+            <div id="coursesResult" class="list"></div>
+        </div>
+
+        <!-- GET /api/Courses/{id} -->
+        <div class="section">
+            <h2>Course By Id</h2>
+            <div class="endpoint">GET https://localhost:7171/api/Courses/{id}</div>
+
+            <div class="controls">
+                <div class="field">
+                    <label for="courseId">Course Id</label>
+                    <input id="courseId" type="number" placeholder="Enter course id" />
                 </div>
-                <div id="courseByIdOutput" class="output"></div>
+                <button onclick="loadCourseById()">Load Course</button>
             </div>
 
-            <div class="panel">
-                <h2 class="section-title">GET /api/Lectures/{id}</h2>
-                <div class="row">
-                    <input id="lectureId" type="number" placeholder="Lecture ID" />
-                    <button onclick="getLectureById()">Load Lecture</button>
+            <div id="courseByIdStatus" class="status"></div>
+            <div id="courseByIdResult" class="list"></div>
+        </div>
+
+        <!-- GET /api/Lectures/{id} -->
+        <div class="section">
+            <h2>Lecture By Id</h2>
+            <div class="endpoint">GET https://localhost:7171/api/Lectures/{id}</div>
+
+            <div class="controls">
+                <div class="field">
+                    <label for="lectureId">Lecture Id</label>
+                    <input id="lectureId" type="number" placeholder="Enter lecture id" />
                 </div>
-                <div id="lectureByIdOutput" class="output"></div>
+                <button onclick="loadLectureById()">Load Lecture</button>
             </div>
 
-            <div class="panel">
-                <h2 class="section-title">GET /api/Lectures/by-course/{courseId}</h2>
-                <div class="row">
-                    <input id="lectureCourseId" type="number" placeholder="Course ID" />
-                    <button onclick="getLecturesByCourseId()">Load Lectures</button>
+            <div id="lectureByIdStatus" class="status"></div>
+            <div id="lectureByIdResult" class="list"></div>
+        </div>
+
+        <!-- GET /api/Lectures/by-course/{courseId} -->
+        <div class="section">
+            <h2>Lectures By Course</h2>
+            <div class="endpoint">GET https://localhost:7171/api/Lectures/by-course/{courseId}</div>
+
+            <div class="controls">
+                <div class="field">
+                    <label for="lecturesCourseId">Course Id</label>
+                    <input id="lecturesCourseId" type="number" placeholder="Enter course id" />
                 </div>
-                <div id="lecturesByCourseOutput" class="list"></div>
+                <button onclick="loadLecturesByCourse()">Load Lectures</button>
             </div>
 
-            <div class="panel">
-                <h2 class="section-title">GET /api/User</h2>
-                <div class="row">
-                    <button onclick="getCurrentUser()">Load User</button>
-                </div>
-                <div id="userOutput" class="output"></div>
-            </div>
-
-            <div class="panel">
-                <h2 class="section-title">GET /api/User/{id}</h2>
-                <div class="row">
-                    <input id="userId" type="number" placeholder="User ID" />
-                    <button onclick="getUserById()">Load User By ID</button>
-                </div>
-                <div id="userByIdOutput" class="output"></div>
-            </div>
-
-            <div class="panel">
-                <h2 class="section-title">GET /api/User/{userId}/profile-picture</h2>
-                <div class="row">
-                    <input id="profileUserId" type="number" placeholder="User ID" />
-                    <button onclick="getProfilePicture()">Load Profile Picture</button>
-                </div>
-                <div id="profilePictureOutput"></div>
-            </div>
-
-            <div class="panel">
-                <h2 class="section-title">GET /api/Videos</h2>
-                <div class="row">
-                    <button onclick="getVideos()">Load Videos</button>
-                </div>
-                <div id="videosOutput" class="output"></div>
-            </div>
+            <div id="lecturesByCourseStatus" class="status"></div>
+            <div id="lecturesByCourseResult" class="list"></div>
         </div>
     </div>
 
     <script>
-    function getBaseUrl() {
-      return document.getElementById('baseUrl').value.trim().replace(/\/$/, '');
-    }
+        const baseUrl = "https://localhost:7171";
 
-    async function apiGet(path) {
-      const response = await fetch(`${getBaseUrl()}${path}`);
+        function setStatus(elementId, message, isError = false) {
+            const el = document.getElementById(elementId);
+            el.className = isError ? "status error" : "status success";
+            el.textContent = message;
+        }
 
-      const contentType = response.headers.get('content-type') || '';
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
+        function clearElement(elementId) {
+            document.getElementById(elementId).innerHTML = "";
+        }
 
-      if (contentType.includes('application/json') || contentType.includes('text/json')) {
-        return await response.json();
-      }
+        function formatDate(value) {
+            if (!value) return "—";
+            const date = new Date(value);
+            if (isNaN(date.getTime())) return value;
+            return date.toLocaleString();
+        }
 
-      if (contentType.startsWith('image/')) {
-        return response.blob();
-      }
+        function safeValue(value) {
+            if (value === null || value === undefined || value === "") return "—";
+            return value;
+        }
 
-      return await response.text();
-    }
-
-    function setText(id, value) {
-      document.getElementById(id).textContent = typeof value === 'string'
-        ? value
-        : JSON.stringify(value, null, 2);
-    }
-
-    function renderLectures(containerId, lectures) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '';
-
-      if (!Array.isArray(lectures) || lectures.length === 0) {
-        container.innerHTML = '<div class="muted">No lectures found.</div>';
-        return;
-      }
-
-      lectures.forEach(lecture => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <h4>${lecture.title ?? 'Untitled Lecture'}</h4>
-          <div><strong>ID:</strong> ${lecture.id}</div>
-          <div><strong>Course ID:</strong> ${lecture.courseId}</div>
-          <div><strong>Description:</strong> ${lecture.description ?? '-'}</div>
-          <div><strong>Created At:</strong> ${lecture.createdAt ?? '-'}</div>
-        `;
-
-        if (Array.isArray(lecture.videos) && lecture.videos.length > 0) {
-          const videosWrap = document.createElement('div');
-          videosWrap.innerHTML = '<div style="margin-top:8px;"><strong>Videos:</strong></div>';
-          lecture.videos.forEach(video => {
-            const videoDiv = document.createElement('div');
-            videoDiv.className = 'video-item';
-            videoDiv.innerHTML = `
-              <div><strong>File:</strong> ${video.originalFileName ?? '-'}</div>
-              <div><strong>Public ID:</strong> ${video.publicId ?? '-'}</div>
-              <div><strong>Uploaded:</strong> ${video.uploadedAtUtc ?? '-'}</div>
-              <div><strong>URL:</strong> <a href="${video.videoUrl}" target="_blank">Open video</a></div>
+        function createRow(label, value) {
+            return `
+                <div class="row">
+                    <div class="key">${label}</div>
+                    <div class="value">${safeValue(value)}</div>
+                </div>
             `;
-            videosWrap.appendChild(videoDiv);
-          });
-          card.appendChild(videosWrap);
         }
 
-        container.appendChild(card);
-      });
-    }
+        function renderLecture(lecture) {
+            const videos = Array.isArray(lecture.videos) ? lecture.videos : [];
 
-    function renderCourses(courses) {
-      const container = document.getElementById('coursesOutput');
-      container.innerHTML = '';
+            return `
+                <div class="card">
+                    <h3>Lecture: ${safeValue(lecture.title)}</h3>
+                    <div class="rows">
+                        ${createRow("Id", lecture.id)}
+                        ${createRow("Course Id", lecture.courseId)}
+                        ${createRow("Title", lecture.title)}
+                        ${createRow("Description", lecture.description)}
+                        ${createRow("Created At", formatDate(lecture.createdAt))}
+                    </div>
 
-      if (!Array.isArray(courses) || courses.length === 0) {
-        container.innerHTML = '<div class="muted">No courses found.</div>';
-        return;
-      }
-
-      courses.forEach(course => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <h4>${course.title ?? 'Untitled Course'}</h4>
-          <div><strong>ID:</strong> ${course.id}</div>
-          <div><strong>Description:</strong> ${course.description ?? '-'}</div>
-          <div><strong>Created At:</strong> ${course.createdAt ?? '-'}</div>
-          <div style="margin-top:8px;"><strong>Lectures:</strong></div>
-          <div class="muted">${Array.isArray(course.lectures) ? course.lectures.length : 0} lecture(s)</div>
-        `;
-
-        if (Array.isArray(course.lectures) && course.lectures.length > 0) {
-          const lecturesWrap = document.createElement('div');
-          lecturesWrap.className = 'list';
-          lecturesWrap.style.marginTop = '8px';
-
-          course.lectures.forEach(lecture => {
-            const lectureCard = document.createElement('div');
-            lectureCard.className = 'video-item';
-            lectureCard.innerHTML = `
-              <div><strong>${lecture.title ?? 'Untitled Lecture'}</strong></div>
-              <div>ID: ${lecture.id}</div>
-              <div>Description: ${lecture.description ?? '-'}</div>
+                    <div class="nested">
+                        <h4>Videos</h4>
+                        ${videos.length === 0
+                    ? `<div class="empty">No videos</div>`
+                    : videos.map(video => `
+                                    <div class="nested-card">
+                                        <div class="rows">
+                                            ${createRow("Id", video.id)}
+                                            ${createRow("Original File Name", video.originalFileName)}
+                                            ${createRow("Video Url", video.videoUrl)}
+                                            ${createRow("Public Id", video.publicId)}
+                                            ${createRow("Uploaded At", formatDate(video.uploadedAtUtc))}
+                                        </div>
+                                    </div>
+                                `).join("")
+                }
+                    </div>
+                </div>
             `;
-            lecturesWrap.appendChild(lectureCard);
-          });
-
-          card.appendChild(lecturesWrap);
         }
 
-        container.appendChild(card);
-      });
-    }
+        function renderCourse(course) {
+            const lectures = Array.isArray(course.lectures) ? course.lectures : [];
 
-    async function getCourses() {
-      try {
-        const data = await apiGet('/api/Courses');
-        renderCourses(data);
-      } catch (error) {
-        document.getElementById('coursesOutput').innerHTML = `<div class="output">${error.message}</div>`;
-      }
-    }
+            return `
+                <div class="card">
+                    <h3>Course: ${safeValue(course.title)}</h3>
+                    <div class="rows">
+                        ${createRow("Id", course.id)}
+                        ${createRow("Title", course.title)}
+                        ${createRow("Description", course.description)}
+                        ${createRow("Created At", formatDate(course.createdAt))}
+                    </div>
 
-    async function getCourseById() {
-      try {
-        const id = document.getElementById('courseId').value;
-        const data = await apiGet(`/api/Courses/${id}`);
-        setText('courseByIdOutput', data);
-      } catch (error) {
-        setText('courseByIdOutput', error.message);
-      }
-    }
-
-    async function getLectureById() {
-      try {
-        const id = document.getElementById('lectureId').value;
-        const data = await apiGet(`/api/Lectures/${id}`);
-        setText('lectureByIdOutput', data);
-      } catch (error) {
-        setText('lectureByIdOutput', error.message);
-      }
-    }
-
-    async function getLecturesByCourseId() {
-      try {
-        const courseId = document.getElementById('lectureCourseId').value;
-        const data = await apiGet(`/api/Lectures/by-course/${courseId}`);
-        renderLectures('lecturesByCourseOutput', data);
-      } catch (error) {
-        document.getElementById('lecturesByCourseOutput').innerHTML = `<div class="output">${error.message}</div>`;
-      }
-    }
-
-    async function getCurrentUser() {
-      try {
-        const data = await apiGet('/api/User');
-        setText('userOutput', data);
-      } catch (error) {
-        setText('userOutput', error.message);
-      }
-    }
-
-    async function getUserById() {
-      try {
-        const id = document.getElementById('userId').value;
-        const data = await apiGet(`/api/User/${id}`);
-        setText('userByIdOutput', data);
-      } catch (error) {
-        setText('userByIdOutput', error.message);
-      }
-    }
-
-    async function getProfilePicture() {
-      const output = document.getElementById('profilePictureOutput');
-      output.innerHTML = '';
-      try {
-        const userId = document.getElementById('profileUserId').value;
-        const blob = await apiGet(`/api/User/${userId}/profile-picture`);
-
-        if (!(blob instanceof Blob)) {
-          output.innerHTML = `<div class="output">${JSON.stringify(blob, null, 2)}</div>`;
-          return;
+                    <div class="nested">
+                        <h4>Lectures</h4>
+                        ${lectures.length === 0
+                    ? `<div class="empty">No lectures</div>`
+                    : lectures.map(lecture => `
+                                    <div class="nested-card">
+                                        <div class="rows">
+                                            ${createRow("Id", lecture.id)}
+                                            ${createRow("Course Id", lecture.courseId)}
+                                            ${createRow("Title", lecture.title)}
+                                            ${createRow("Description", lecture.description)}
+                                            ${createRow("Created At", formatDate(lecture.createdAt))}
+                                        </div>
+                                    </div>
+                                `).join("")
+                }
+                    </div>
+                </div>
+            `;
         }
 
-        const imageUrl = URL.createObjectURL(blob);
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        img.alt = 'Profile Picture';
-        img.style.maxWidth = '100%';
-        img.style.borderRadius = '10px';
-        img.style.border = '1px solid #ddd';
-        output.appendChild(img);
-      } catch (error) {
-        output.innerHTML = `<div class="output">${error.message}</div>`;
-      }
-    }
+        async function fetchJson(url) {
+            const response = await fetch(url);
 
-    async function getVideos() {
-      try {
-        const data = await apiGet('/api/Videos');
-        setText('videosOutput', data);
-      } catch (error) {
-        setText('videosOutput', error.message);
-      }
-    }
+            if (!response.ok) {
+                let details = "";
+                try {
+                    details = await response.text();
+                } catch {
+                    details = "";
+                }
+                throw new Error(`HTTP ${response.status}${details ? " - " + details : ""}`);
+            }
 
-    async function loadAllLists() {
-      await Promise.allSettled([
-        getCourses(),
-        getCurrentUser(),
-        getVideos()
-      ]);
-    }
+            return await response.json();
+        }
+
+        async function loadCourses() {
+            const statusId = "coursesStatus";
+            const resultId = "coursesResult";
+
+            clearElement(resultId);
+            setStatus(statusId, "Loading...");
+
+            try {
+                const data = await fetchJson(`${baseUrl}/api/Courses`);
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    document.getElementById(resultId).innerHTML = `<div class="empty">No courses found</div>`;
+                    setStatus(statusId, "Loaded successfully.");
+                    return;
+                }
+
+                document.getElementById(resultId).innerHTML = data.map(renderCourse).join("");
+                setStatus(statusId, `Loaded ${data.length} course(s).`);
+            } catch (error) {
+                setStatus(statusId, `Failed to load courses. ${error.message}`, true);
+            }
+        }
+
+        async function loadCourseById() {
+            const id = document.getElementById("courseId").value.trim();
+            const statusId = "courseByIdStatus";
+            const resultId = "courseByIdResult";
+
+            clearElement(resultId);
+
+            if (!id) {
+                setStatus(statusId, "Please enter a course id.", true);
+                return;
+            }
+
+            setStatus(statusId, "Loading...");
+
+            try {
+                const data = await fetchJson(`${baseUrl}/api/Courses/${id}`);
+                document.getElementById(resultId).innerHTML = renderCourse(data);
+                setStatus(statusId, "Loaded successfully.");
+            } catch (error) {
+                setStatus(statusId, `Failed to load course. ${error.message}`, true);
+            }
+        }
+
+        async function loadLectureById() {
+            const id = document.getElementById("lectureId").value.trim();
+            const statusId = "lectureByIdStatus";
+            const resultId = "lectureByIdResult";
+
+            clearElement(resultId);
+
+            if (!id) {
+                setStatus(statusId, "Please enter a lecture id.", true);
+                return;
+            }
+
+            setStatus(statusId, "Loading...");
+
+            try {
+                const data = await fetchJson(`${baseUrl}/api/Lectures/${id}`);
+                document.getElementById(resultId).innerHTML = renderLecture(data);
+                setStatus(statusId, "Loaded successfully.");
+            } catch (error) {
+                setStatus(statusId, `Failed to load lecture. ${error.message}`, true);
+            }
+        }
+
+        async function loadLecturesByCourse() {
+            const courseId = document.getElementById("lecturesCourseId").value.trim();
+            const statusId = "lecturesByCourseStatus";
+            const resultId = "lecturesByCourseResult";
+
+            clearElement(resultId);
+
+            if (!courseId) {
+                setStatus(statusId, "Please enter a course id.", true);
+                return;
+            }
+
+            setStatus(statusId, "Loading...");
+
+            try {
+                const data = await fetchJson(`${baseUrl}/api/Lectures/by-course/${courseId}`);
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    document.getElementById(resultId).innerHTML = `<div class="empty">No lectures found for this course</div>`;
+                    setStatus(statusId, "Loaded successfully.");
+                    return;
+                }
+
+                document.getElementById(resultId).innerHTML = data.map(renderLecture).join("");
+                setStatus(statusId, `Loaded ${data.length} lecture(s).`);
+            } catch (error) {
+                setStatus(statusId, `Failed to load lectures. ${error.message}`, true);
+            }
+        }
     </script>
 </body>
 </html>
