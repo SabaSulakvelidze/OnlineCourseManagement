@@ -22,20 +22,29 @@
         .bad {
             color: crimson;
         }
+
+        button {
+            padding: 10px 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <h2>Dev Launcher</h2>
-    <p>If tabs don’t open, popups are blocked. Allow popups for <code>https://localhost:7171</code> and refresh.</p>
+    <p>Click the button to open pages.</p>
+    <button id="openBtn">Open Dev Tabs</button>
     <ul id="status"></ul>
 
     <script>
         const links = [
+            "/OnlineCourseManagementViewer.html",
             "/swagger/index.html",
             "/HomePage.html"
+            
         ];
 
         const ul = document.getElementById("status");
+        const button = document.getElementById("openBtn");
 
         function addLine(text, ok) {
             const li = document.createElement("li");
@@ -44,10 +53,14 @@
             ul.appendChild(li);
         }
 
-        for (const url of links) {
-            const w = window.open(url, "_blank");
-            addLine(`open(${url}) -> ` + (w ? "opened" : "BLOCKED"), !!w);
-        }
+        button.addEventListener("click", () => {
+            ul.innerHTML = "";
+
+            for (const url of links) {
+                const w = window.open(url, "_blank");
+                addLine(`open(${url}) -> ` + (w ? "opened" : "BLOCKED"), !!w);
+            }
+        });
     </script>
 </body>
 </html>

@@ -1,0 +1,498 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Courses and Lectures Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f8fc;
+            margin: 0;
+            padding: 24px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtext {
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+        }
+
+            .section h2 {
+                margin-top: 0;
+                margin-bottom: 16px;
+            }
+
+        .endpoint {
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 14px;
+            padding: 10px 12px;
+            background: #f3f4f6;
+            border-radius: 10px;
+            word-break: break-word;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: end;
+            margin-bottom: 16px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input {
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            min-width: 220px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: #1d4ed8;
+            }
+
+        .status {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .error {
+            color: #b91c1c;
+            font-weight: 600;
+        }
+
+        .success {
+            color: #065f46;
+        }
+
+        .list {
+            display: grid;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .card {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 16px;
+            background: #ffffff;
+        }
+
+            .card h3 {
+                margin-top: 0;
+                margin-bottom: 14px;
+                font-size: 18px;
+            }
+
+        .rows {
+            display: grid;
+            gap: 8px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+            .row:last-child {
+                border-bottom: none;
+            }
+
+        .key {
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .value {
+            color: #111827;
+            word-break: break-word;
+        }
+
+        .nested {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+            .nested h4 {
+                margin-top: 0;
+                margin-bottom: 10px;
+            }
+
+        .nested-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .muted {
+            color: #6b7280;
+        }
+
+        .empty {
+            padding: 14px;
+            background: #f9fafb;
+            border: 1px dashed #d1d5db;
+            border-radius: 10px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 700px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+
+            input {
+                min-width: unset;
+                width: 100%;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Courses and Lectures Viewer</h1>
+        <div class="subtext">
+            Base URL: <strong>https://localhost:7171</strong>
+        </div>
+
+        <!-- GET /api/Courses -->
+        <div class="section">
+            <h2>All Courses</h2>
+            <div class="endpoint">GET https://localhost:7171/api/Courses</div>
+
+            <div class="controls">
+                <button onclick="loadCourses()">Load Courses</button>
+            </div>
+
+            <div id="coursesStatus" class="status"></div>
+            <div id="coursesResult" class="list"></div>
+        </div>
+
+        <!-- GET /api/Courses/{id} -->
+        <div class="section">
+            <h2>Course By Id</h2>
+            <div class="endpoint">GET https://localhost:7171/api/Courses/{id}</div>
+
+            <div class="controls">
+                <div class="field">
+                    <label for="courseId">Course Id</label>
+                    <input id="courseId" type="number" placeholder="Enter course id" />
+                </div>
+                <button onclick="loadCourseById()">Load Course</button>
+            </div>
+
+            <div id="courseByIdStatus" class="status"></div>
+            <div id="courseByIdResult" class="list"></div>
+        </div>
+
+        <!-- GET /api/Lectures/{id} -->
+        <div class="section">
+            <h2>Lecture By Id</h2>
+            <div class="endpoint">GET https://localhost:7171/api/Lectures/{id}</div>
+
+            <div class="controls">
+                <div class="field">
+                    <label for="lectureId">Lecture Id</label>
+                    <input id="lectureId" type="number" placeholder="Enter lecture id" />
+                </div>
+                <button onclick="loadLectureById()">Load Lecture</button>
+            </div>
+
+            <div id="lectureByIdStatus" class="status"></div>
+            <div id="lectureByIdResult" class="list"></div>
+        </div>
+
+        <!-- GET /api/Lectures/by-course/{courseId} -->
+        <div class="section">
+            <h2>Lectures By Course</h2>
+            <div class="endpoint">GET https://localhost:7171/api/Lectures/by-course/{courseId}</div>
+
+            <div class="controls">
+                <div class="field">
+                    <label for="lecturesCourseId">Course Id</label>
+                    <input id="lecturesCourseId" type="number" placeholder="Enter course id" />
+                </div>
+                <button onclick="loadLecturesByCourse()">Load Lectures</button>
+            </div>
+
+            <div id="lecturesByCourseStatus" class="status"></div>
+            <div id="lecturesByCourseResult" class="list"></div>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = "https://localhost:7171";
+
+        function setStatus(elementId, message, isError = false) {
+            const el = document.getElementById(elementId);
+            el.className = isError ? "status error" : "status success";
+            el.textContent = message;
+        }
+
+        function clearElement(elementId) {
+            document.getElementById(elementId).innerHTML = "";
+        }
+
+        function formatDate(value) {
+            if (!value) return "—";
+            const date = new Date(value);
+            if (isNaN(date.getTime())) return value;
+            return date.toLocaleString();
+        }
+
+        function safeValue(value) {
+            if (value === null || value === undefined || value === "") return "—";
+            return value;
+        }
+
+        function createRow(label, value) {
+            return `
+                <div class="row">
+                    <div class="key">${label}</div>
+                    <div class="value">${safeValue(value)}</div>
+                </div>
+            `;
+        }
+
+        function renderLecture(lecture) {
+            const videos = Array.isArray(lecture.videos) ? lecture.videos : [];
+
+            return `
+                <div class="card">
+                    <h3>Lecture: ${safeValue(lecture.title)}</h3>
+                    <div class="rows">
+                        ${createRow("Id", lecture.id)}
+                        ${createRow("Course Id", lecture.courseId)}
+                        ${createRow("Title", lecture.title)}
+                        ${createRow("Description", lecture.description)}
+                        ${createRow("Created At", formatDate(lecture.createdAt))}
+                    </div>
+
+                    <div class="nested">
+                        <h4>Videos</h4>
+                        ${videos.length === 0
+                    ? `<div class="empty">No videos</div>`
+                    : videos.map(video => `
+                                    <div class="nested-card">
+                                        <div class="rows">
+                                            ${createRow("Id", video.id)}
+                                            ${createRow("Original File Name", video.originalFileName)}
+                                            ${createRow("Video Url", video.videoUrl)}
+                                            ${createRow("Public Id", video.publicId)}
+                                            ${createRow("Uploaded At", formatDate(video.uploadedAtUtc))}
+                                        </div>
+                                    </div>
+                                `).join("")
+                }
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCourse(course) {
+            const lectures = Array.isArray(course.lectures) ? course.lectures : [];
+
+            return `
+                <div class="card">
+                    <h3>Course: ${safeValue(course.title)}</h3>
+                    <div class="rows">
+                        ${createRow("Id", course.id)}
+                        ${createRow("Title", course.title)}
+                        ${createRow("Description", course.description)}
+                        ${createRow("Created At", formatDate(course.createdAt))}
+                    </div>
+
+                    <div class="nested">
+                        <h4>Lectures</h4>
+                        ${lectures.length === 0
+                    ? `<div class="empty">No lectures</div>`
+                    : lectures.map(lecture => `
+                                    <div class="nested-card">
+                                        <div class="rows">
+                                            ${createRow("Id", lecture.id)}
+                                            ${createRow("Course Id", lecture.courseId)}
+                                            ${createRow("Title", lecture.title)}
+                                            ${createRow("Description", lecture.description)}
+                                            ${createRow("Created At", formatDate(lecture.createdAt))}
+                                        </div>
+                                    </div>
+                                `).join("")
+                }
+                    </div>
+                </div>
+            `;
+        }
+
+        async function fetchJson(url) {
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                let details = "";
+                try {
+                    details = await response.text();
+                } catch {
+                    details = "";
+                }
+                throw new Error(`HTTP ${response.status}${details ? " - " + details : ""}`);
+            }
+
+            return await response.json();
+        }
+
+        async function loadCourses() {
+            const statusId = "coursesStatus";
+            const resultId = "coursesResult";
+
+            clearElement(resultId);
+            setStatus(statusId, "Loading...");
+
+            try {
+                const data = await fetchJson(`${baseUrl}/api/Courses`);
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    document.getElementById(resultId).innerHTML = `<div class="empty">No courses found</div>`;
+                    setStatus(statusId, "Loaded successfully.");
+                    return;
+                }
+
+                document.getElementById(resultId).innerHTML = data.map(renderCourse).join("");
+                setStatus(statusId, `Loaded ${data.length} course(s).`);
+            } catch (error) {
+                setStatus(statusId, `Failed to load courses. ${error.message}`, true);
+            }
+        }
+
+        async function loadCourseById() {
+            const id = document.getElementById("courseId").value.trim();
+            const statusId = "courseByIdStatus";
+            const resultId = "courseByIdResult";
+
+            clearElement(resultId);
+
+            if (!id) {
+                setStatus(statusId, "Please enter a course id.", true);
+                return;
+            }
+
+            setStatus(statusId, "Loading...");
+
+            try {
+                const data = await fetchJson(`${baseUrl}/api/Courses/${id}`);
+                document.getElementById(resultId).innerHTML = renderCourse(data);
+                setStatus(statusId, "Loaded successfully.");
+            } catch (error) {
+                setStatus(statusId, `Failed to load course. ${error.message}`, true);
+            }
+        }
+
+        async function loadLectureById() {
+            const id = document.getElementById("lectureId").value.trim();
+            const statusId = "lectureByIdStatus";
+            const resultId = "lectureByIdResult";
+
+            clearElement(resultId);
+
+            if (!id) {
+                setStatus(statusId, "Please enter a lecture id.", true);
+                return;
+            }
+
+            setStatus(statusId, "Loading...");
+
+            try {
+                const data = await fetchJson(`${baseUrl}/api/Lectures/${id}`);
+                document.getElementById(resultId).innerHTML = renderLecture(data);
+                setStatus(statusId, "Loaded successfully.");
+            } catch (error) {
+                setStatus(statusId, `Failed to load lecture. ${error.message}`, true);
+            }
+        }
+
+        async function loadLecturesByCourse() {
+            const courseId = document.getElementById("lecturesCourseId").value.trim();
+            const statusId = "lecturesByCourseStatus";
+            const resultId = "lecturesByCourseResult";
+
+            clearElement(resultId);
+
+            if (!courseId) {
+                setStatus(statusId, "Please enter a course id.", true);
+                return;
+            }
+
+            setStatus(statusId, "Loading...");
+
+            try {
+                const data = await fetchJson(`${baseUrl}/api/Lectures/by-course/${courseId}`);
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    document.getElementById(resultId).innerHTML = `<div class="empty">No lectures found for this course</div>`;
+                    setStatus(statusId, "Loaded successfully.");
+                    return;
+                }
+
+                document.getElementById(resultId).innerHTML = data.map(renderLecture).join("");
+                setStatus(statusId, `Loaded ${data.length} lecture(s).`);
+            } catch (error) {
+                setStatus(statusId, `Failed to load lectures. ${error.message}`, true);
+            }
+        }
+    </script>
+</body>
+</html>
