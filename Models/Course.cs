@@ -13,5 +13,9 @@ public partial class Course
 
     public DateTime CreatedAt { get; set; }
 
+    public virtual ICollection<LecturersCourse> LecturersCourses { get; set; } = new List<LecturersCourse>();
+
     public virtual ICollection<Lecture> Lectures { get; set; } = new List<Lecture>();
+
+    public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
 }

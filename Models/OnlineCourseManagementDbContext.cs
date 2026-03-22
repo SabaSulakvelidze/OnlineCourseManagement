@@ -21,11 +21,15 @@ public partial class OnlineCourseManagementDbContext : DbContext
 
     public virtual DbSet<LectureVideo> LectureVideos { get; set; }
 
+    public virtual DbSet<LecturersCourse> LecturersCourses { get; set; }
+
+    public virtual DbSet<StudentsCourse> StudentsCourses { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=OnlineCourseManagementDB;Trusted_Connection=True;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=OnlineCourseManagementDB;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -67,6 +71,50 @@ public partial class OnlineCourseManagementDbContext : DbContext
             entity.HasOne(d => d.Lecture).WithMany(p => p.LectureVideos)
                 .HasForeignKey(d => d.LectureId)
                 .HasConstraintName("FK_Lecture_LectureVideos");
+        });
+
+        modelBuilder.Entity<LecturersCourse>(entity =>
+        {
+            entity.HasKey(e => new { e.LecturerId, e.CourseId }).HasName("PK__Lecturer__36EA6E27A308D3F4");
+
+            entity.Property(e => e.AssignedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Course).WithMany(p => p.LecturersCourses)
+                .HasForeignKey(d => d.CourseId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Lecturers__Cours__0A9D95DB");
+
+            entity.HasOne(d => d.Lecturer).WithMany(p => p.LecturersCourses)
+                .HasForeignKey(d => d.LecturerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Lecturers__Lectu__09A971A2");
+        });
+
+        modelBuilder.Entity<StudentsCourse>(entity =>
+        {
+            entity.HasKey(e => new { e.StudentId, e.CourseId }).HasName("PK__Students__5E57FC837298EC71");
+
+            entity.Property(e => e.EnrolledAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("EnrolledAT");
+            entity.Property(e => e.Grade).HasDefaultValue(0);
+            entity.Property(e => e.Progress).HasDefaultValue(0);
+            entity.Property(e => e.Status)
+                .HasMaxLength(60)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Course).WithMany(p => p.StudentsCourses)
+                .HasForeignKey(d => d.CourseId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__StudentsC__Cours__06CD04F7");
+
+            entity.HasOne(d => d.Student).WithMany(p => p.StudentsCourses)
+                .HasForeignKey(d => d.StudentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__StudentsC__Stude__05D8E0BE");
         });
 
         modelBuilder.Entity<User>(entity =>

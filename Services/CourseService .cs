@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet;
+using FinalProject.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Requests;
@@ -11,68 +12,70 @@ namespace OnlineCourseManagement.Services
         OnlineCourseManagementDbContext context,
         IMapper mapper) :ICourseService
     {
-        public async Task<CourseResponse> CreateAsync(CreateCourseRequest request)
+        public async Task<CourseResponse> CreateCourse(CreateCourseRequest request)
         {
-            var course = new Course
-            {
-                Title = request.Title.Trim(),
-                Description = string.IsNullOrWhiteSpace(request.Description) ? null : request.Description.Trim(),
-                CreatedAt = DateTime.UtcNow
-            };
+            var result = mapper.Map<Course>(request);
+            result.CreatedAt = DateTime.UtcNow;
 
-            context.Courses.Add(course);
+            context.Courses.Add(result);
             await context.SaveChangesAsync();
 
-            return mapper.Map<CourseResponse>(course);
+            return mapper.Map<CourseResponse>(result);
         }
 
-        public async Task<List<CourseResponse>> GetAllAsync()
+        public async Task<List<CourseResponse>> GetAllCourses()
         {
             var courses = await context.Courses
-                .AsNoTracking()
                 .Include(c => c.Lectures)
                     .ThenInclude(l => l.LectureVideos)
-                .OrderBy(c => c.Id)
                 .ToListAsync();
 
             return mapper.Map<List<CourseResponse>>(courses);
         }
 
-        public async Task<CourseResponse?> GetByIdAsync(int id)
+        public async Task<CourseResponse?> GetCourseById(int id)
         {
             var course = await context.Courses
-                .AsNoTracking()
                 .Include(c => c.Lectures)
                     .ThenInclude(l => l.LectureVideos)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id) 
+                ?? throw new ElementNotFoundException($"Course with id {id} was not found"); ;
 
-            return course == null ? null : mapper.Map<CourseResponse>(course);
+            return mapper.Map<CourseResponse>(course);
         }
 
-        public async Task<CourseResponse?> UpdateAsync(int id, UpdateCourseRequest request)
+        public async Task<CourseResponse?> UpdateCourse(int id, UpdateCourseRequest request)
         {
-            var course = await context.Courses.FirstOrDefaultAsync(c => c.Id == id);
-            if (course == null)
-                return null;
+            var course = await context.Courses.FindAsync(id)
+                ?? throw new ElementNotFoundException($"Course with id {id} was not found");
 
-            course.Title = request.Title.Trim();
-            course.Description = string.IsNullOrWhiteSpace(request.Description) ? null : request.Description.Trim();
+            if (await context.Courses.AnyAsync(p => p.Title == request.Title))
+                throw new ConflictException($"Course with title '{request.Title}' already exists");
+
+
+            mapper.Map(request, course);
 
             await context.SaveChangesAsync();
 
-            return await GetByIdAsync(id);
+            return mapper.Map<CourseResponse>(course);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteCourse(int id)
         {
-            var course = await context.Courses.FirstOrDefaultAsync(c => c.Id == id);
-            if (course == null)
-                return false;
+            var course = await context.Courses.FindAsync(id)
+                 ?? throw new ElementNotFoundException($"Course with id {id} was not found");
+
+            var lectureId = await context.Lectures
+                .Where(l => l.CourseId == id)
+                .Select(l => l.Id)
+                .ToListAsync();
+
+            if (lectureId.Count != 0)
+                throw new ConflictException($"Course with id {id} has lectures: {string.Join(", ", lectureId)}");
 
             context.Courses.Remove(course);
             await context.SaveChangesAsync();
 
-            return true;
         }
 
     }

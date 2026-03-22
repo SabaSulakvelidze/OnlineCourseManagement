@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 using OnlineCourseManagement.Services;
@@ -10,83 +12,41 @@ namespace OnlineCourseManagement.Controllers
     public class LecturesController(ILectureService lectureService) : ControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult<LectureResponse>> Create(CreateLectureRequest request)
+        public async Task<ActionResult<LectureResponse>> CreateLecture(CreateLectureRequest request)
         {
-            if (!ModelState.IsValid)
-                return ValidationProblem(ModelState);
-
-            try
-            {
-                var result = await lectureService.CreateAsync(request);
-                if (result == null)
-                    return NotFound($"Course with id {request.CourseId} was not found.");
-
-                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ex.Message);
-            }
+            return StatusCode(StatusCodes.Status201Created, await lectureService.CreateLecture(request));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<LectureResponse>> GetById(int id)
+        public async Task<ActionResult<LectureResponse>> GetLectureById(int id)
         {
-            var result = await lectureService.GetByIdAsync(id);
-            if (result == null)
-                return NotFound($"Lecture with id {id} was not found.");
-
-            return Ok(result);
+            return Ok(await lectureService.GetLectureById(id));
         }
 
         [HttpGet("by-course/{courseId}")]
-        public async Task<ActionResult<List<LectureResponse>>> GetByCourseId(int courseId)
+        public async Task<ActionResult<List<LectureResponse>>> GetLectureByCourseId(int courseId)
         {
-            var result = await lectureService.GetByCourseIdAsync(courseId);
-            return Ok(result);
+            return Ok(await lectureService.GetLectureByCourseId(courseId));
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<LectureResponse>> Update(int id, UpdateLectureRequest request)
         {
-            if (!ModelState.IsValid)
-                return ValidationProblem(ModelState);
-
-            try
-            {
-                var result = await lectureService.UpdateAsync(id, request);
-                if (result == null)
-                    return NotFound($"Lecture with id {id} was not found.");
-
-                return Ok(result);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ex.Message);
-            }
+            return Ok(await lectureService.UpdateLecture(id, request));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteLecture(int id)
         {
-            var deleted = await lectureService.DeleteAsync(id);
-            if (!deleted)
-                return NotFound($"Lecture with id {id} was not found.");
+            await lectureService.DeleteLecture(id);
 
-            return NoContent();
+            return Ok($"lecture with id {id} was deleted!");
         }
 
         [HttpPost("videos")]
         public async Task<ActionResult<LectureVideoResponse>> AddVideo(AddLectureVideoRequest request)
         {
-            if (!ModelState.IsValid)
-                return ValidationProblem(ModelState);
-
-            var result = await lectureService.AddVideoAsync(request);
-            if (result == null)
-                return NotFound($"Lecture with id {request.LectureId} was not found.");
-
-            return Ok(result);
+            return Ok(await lectureService.AddVideoToLecture(request));
         }
     }
 }
