@@ -14,4 +14,12 @@ public partial class User
     public string? ProfileImageFileName { get; set; }
 
     public string? ProfileImageContentType { get; set; }
+
+    public string UserPassword { get; set; } = null!;
+
+    public string Email { get; set; } = null!;
+
+    public string PhoneNumber { get; set; } = null!;
+
+    public virtual ICollection<UsersPosition> UsersPositions { get; set; } = new List<UsersPosition>();
 }

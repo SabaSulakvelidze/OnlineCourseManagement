@@ -2,6 +2,8 @@
 using FinalProject.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OnlineCourseManagement.Models;
+using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Service;
 
 namespace OnlineCourseManagement.Controllers
@@ -68,5 +70,8 @@ namespace OnlineCourseManagement.Controllers
 
             return File(result.ImageBytes, result.ContentType);
         }
+
+        
+
     }
 }
