@@ -34,7 +34,7 @@ namespace OnlineCourseManagement.Services
                 UserId = request.UserId,
                 CourseId = request.CourseId,
                 Price = course.Price,
-                Status = (int) PurchaseStatus.Pending,
+                Status = (int)PurchaseStatus.Pending,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -44,7 +44,7 @@ namespace OnlineCourseManagement.Services
             var payment = new Payment
             {
                 PurchaseId = purchase.Id,
-                Provider = "FakeStripe",
+                Provider = "FakeBank",
                 Amount = purchase.Price,
                 Currency = course.PriceCurrency,
                 Status = (int) PaymentStatus.Pending,
