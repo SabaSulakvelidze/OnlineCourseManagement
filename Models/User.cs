@@ -22,4 +22,8 @@ public partial class User
     public string PhoneNumber { get; set; } = null!;
 
     public virtual ICollection<UsersPosition> UsersPositions { get; set; } = new List<UsersPosition>();
+
+    public virtual ICollection<LecturersCourse> LecturersCourses { get; set; } = new List<LecturersCourse>();
+
+    public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
 }

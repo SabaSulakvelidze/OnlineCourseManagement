@@ -5,10 +5,10 @@ namespace OnlineCourseManagement.Services
 {
     public interface ICourseService
     {
-        Task<CourseResponse> CreateAsync(CreateCourseRequest request);
-        Task<List<CourseResponse>> GetAllAsync();
-        Task<CourseResponse?> GetByIdAsync(int id);
-        Task<CourseResponse?> UpdateAsync(int id, UpdateCourseRequest request);
-        Task<bool> DeleteAsync(int id);
+        Task<CourseResponse> CreateCourse(CreateCourseRequest request);
+        Task<List<CourseResponse>> GetAllCourses();
+        Task<CourseResponse?> GetCourseById(int id);
+        Task<CourseResponse?> UpdateCourse(int id, UpdateCourseRequest request);
+        Task DeleteCourse(int id);
     }
 }

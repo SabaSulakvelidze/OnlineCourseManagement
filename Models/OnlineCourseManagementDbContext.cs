@@ -23,6 +23,10 @@ public partial class OnlineCourseManagementDbContext : DbContext
 
     public virtual DbSet<Position> Positions { get; set; }
 
+    public virtual DbSet<LecturersCourse> LecturersCourses { get; set; }
+
+    public virtual DbSet<StudentsCourse> StudentsCourses { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UsersPosition> UsersPositions { get; set; }
@@ -83,6 +87,50 @@ public partial class OnlineCourseManagementDbContext : DbContext
             entity.Property(e => e.PositionName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<LecturersCourse>(entity =>
+        {
+            entity.HasKey(e => new { e.LecturerId, e.CourseId }).HasName("PK__Lecturer__36EA6E27A308D3F4");
+
+            entity.Property(e => e.AssignedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Course).WithMany(p => p.LecturersCourses)
+                .HasForeignKey(d => d.CourseId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Lecturers__Cours__0A9D95DB");
+
+            entity.HasOne(d => d.Lecturer).WithMany(p => p.LecturersCourses)
+                .HasForeignKey(d => d.LecturerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Lecturers__Lectu__09A971A2");
+        });
+
+        modelBuilder.Entity<StudentsCourse>(entity =>
+        {
+            entity.HasKey(e => new { e.StudentId, e.CourseId }).HasName("PK__Students__5E57FC837298EC71");
+
+            entity.Property(e => e.EnrolledAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("EnrolledAT");
+            entity.Property(e => e.Grade).HasDefaultValue(0);
+            entity.Property(e => e.Progress).HasDefaultValue(0);
+            entity.Property(e => e.Status)
+                .HasMaxLength(60)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Course).WithMany(p => p.StudentsCourses)
+                .HasForeignKey(d => d.CourseId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__StudentsC__Cours__06CD04F7");
+
+            entity.HasOne(d => d.Student).WithMany(p => p.StudentsCourses)
+                .HasForeignKey(d => d.StudentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__StudentsC__Stude__05D8E0BE");
         });
 
         modelBuilder.Entity<User>(entity =>

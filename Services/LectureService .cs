@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FinalProject.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Requests;
@@ -11,30 +12,22 @@ namespace OnlineCourseManagement.Services
         IMapper mapper
         ) : ILectureService
     {
-        public async Task<LectureResponse?> CreateAsync(CreateLectureRequest request)
+        public async Task<LectureResponse?> CreateLecture(CreateLectureRequest request)
         {
-            var courseExists = await context.Courses.AnyAsync(c => c.Id == request.CourseId);
-            if (!courseExists)
-                return null;
+            if (!await context.Courses.AnyAsync(c => c.Id == request.CourseId))
+                throw new ElementNotFoundException($"Course with id {request.CourseId} was not found.");
+            var result = mapper.Map<Lecture>(request);
+            result.CreatedAt = DateTime.UtcNow;
 
-            var lecture = new Lecture
-            {
-                CourseId = request.CourseId,
-                Title = request.Title.Trim(),
-                Description = string.IsNullOrWhiteSpace(request.Description) ? null : request.Description.Trim(),
-                CreatedAt = DateTime.UtcNow
-            };
-
-            context.Lectures.Add(lecture);
+            context.Lectures.Add(result);
             await context.SaveChangesAsync();
 
-            return await GetByIdAsync(lecture.Id);
+            return mapper.Map<LectureResponse>(result);
         }
 
-        public async Task<List<LectureResponse>> GetByCourseIdAsync(int courseId)
+        public async Task<List<LectureResponse>> GetLectureByCourseId(int courseId)
         {
             var lectures = await context.Lectures
-                .AsNoTracking()
                 .Where(l => l.CourseId == courseId)
                 .Include(l => l.LectureVideos)
                 .ToListAsync();
@@ -42,68 +35,53 @@ namespace OnlineCourseManagement.Services
             return mapper.Map<List<LectureResponse>>(lectures);
         }
 
-        public async Task<LectureResponse?> GetByIdAsync(int id)
+        public async Task<LectureResponse?> GetLectureById(int id)
         {
             var lecture = await context.Lectures
-                .AsNoTracking()
                 .Include(l => l.LectureVideos)
-                .FirstOrDefaultAsync(l => l.Id == id);
+                .FirstOrDefaultAsync(l => l.Id == id)
+                ?? throw new ElementNotFoundException($"Lecture with id {id} was not found");
 
-            return lecture == null ? null : mapper.Map<LectureResponse>(lecture);
+            return mapper.Map<LectureResponse>(lecture);
         }
 
-        public async Task<LectureResponse?> UpdateAsync(int id, UpdateLectureRequest request)
+        public async Task<LectureResponse?> UpdateLecture(int id, UpdateLectureRequest request)
         {
-            var lecture = await context.Lectures.FirstOrDefaultAsync(l => l.Id == id);
-            if (lecture == null)
-                return null;
+            var lecture = await context.Lectures
+               .Include(l => l.LectureVideos)
+               .FirstOrDefaultAsync(l => l.Id == id)
+               ?? throw new ElementNotFoundException($"Lecture with id {id} was not found");
 
-            lecture.Title = request.Title.Trim();
-            lecture.Description = string.IsNullOrWhiteSpace(request.Description) ? null : request.Description.Trim();
+            mapper.Map(request, lecture);
 
             await context.SaveChangesAsync();
 
-            return await GetByIdAsync(id);
+            return mapper.Map<LectureResponse>(lecture);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteLecture(int id)
         {
-            var lecture = await context.Lectures.FirstOrDefaultAsync(l => l.Id == id);
-            if (lecture == null)
-                return false;
+            var lecture = await context.Lectures
+                .Include(l => l.LectureVideos)
+                .FirstOrDefaultAsync(l => l.Id == id)
+                ?? throw new ElementNotFoundException($"Lecture with id {id} was not found");
 
             context.Lectures.Remove(lecture);
             await context.SaveChangesAsync();
-
-            return true;
         }
 
-        public async Task<LectureVideoResponse?> AddVideoAsync(AddLectureVideoRequest request)
+        public async Task<LectureVideoResponse?> AddVideoToLecture(AddLectureVideoRequest request)
         {
-            var lectureExists = await context.Lectures.AnyAsync(l => l.Id == request.LectureId);
-            if (!lectureExists)
-                return null;
+            if (!await context.Lectures.AnyAsync(c => c.Id == request.LectureId))
+                throw new ElementNotFoundException($"Lecture with id {request.LectureId} was not found.");
 
-            var lectureVideo = new LectureVideo
-            {
-                LectureId = request.LectureId,
-                OriginalFileName = request.OriginalFileName.Trim(),
-                VideoUrl = request.VideoUrl.Trim(),
-                PublicId = request.PublicId.Trim(),
-                UploadedAt = DateTime.UtcNow
-            };
+            var result = mapper.Map<LectureVideo>(request);
+            result.UploadedAt = DateTime.UtcNow;
 
-            context.LectureVideos.Add(lectureVideo);
+            context.LectureVideos.Add(result);
             await context.SaveChangesAsync();
 
-            return new LectureVideoResponse
-            {
-                Id = lectureVideo.Id,
-                OriginalFileName = lectureVideo.OriginalFileName,
-                VideoUrl = lectureVideo.VideoUrl,
-                PublicId = lectureVideo.PublicId,
-                UploadedAtUtc = lectureVideo.UploadedAt
-            };
+            return mapper.Map<LectureVideoResponse>(result);
         }
 
     }
