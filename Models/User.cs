@@ -14,4 +14,10 @@ public partial class User
     public string? ProfileImageFileName { get; set; }
 
     public string? ProfileImageContentType { get; set; }
+
+    public virtual ICollection<LecturersCourse> LecturersCourses { get; set; } = new List<LecturersCourse>();
+
+    public virtual ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
+
+    public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
 }
