@@ -13,9 +13,19 @@ public partial class Course
 
     public DateTime CreatedAt { get; set; }
 
+    public decimal Price { get; set; }
+
+    public string PriceCurrency { get; set; } = null!;
+
+    public virtual ICollection<LecturersCourse> LecturersCourses { get; set; } = new List<LecturersCourse>();
+
     public virtual ICollection<LecturersCourse> LecturersCourses { get; set; } = new List<LecturersCourse>();
 
     public virtual ICollection<Lecture> Lectures { get; set; } = new List<Lecture>();
+
+    public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
+
+    public virtual ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
 
     public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
 }

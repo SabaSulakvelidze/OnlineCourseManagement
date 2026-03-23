@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineCourseManagement.Models;
 
@@ -11,9 +12,11 @@ using OnlineCourseManagement.Models;
 namespace OnlineCourseManagement.Migrations
 {
     [DbContext(typeof(OnlineCourseManagementDbContext))]
-    partial class OnlineCourseManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260322190746_InitialClean")]
+    partial class InitialClean
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,119 +24,6 @@ namespace OnlineCourseManagement.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Course", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id")
-                        .HasName("PK__Courses__3214EC079C42C126");
-
-                    b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Lecture", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id")
-                        .HasName("PK__Lectures__3214EC0749266654");
-
-                    b.HasIndex(new[] { "CourseId" }, "IX_Lectures_CourseId");
-
-                    b.ToTable("Lectures");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.LectureVideo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("LectureId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OriginalFileName")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("PublicId")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("VideoUrl")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.HasKey("Id")
-                        .HasName("PK__LectureV__3214EC0765EDDA64");
-
-                    b.HasIndex(new[] { "LectureId" }, "IX_LectureVideos_LectureId");
-
-                    b.ToTable("LectureVideos");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Position", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("(newid())");
-
-                    b.Property<string>("PositionName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id")
-                        .HasName("PK__Position__3214EC07D9D8112D");
-
-                    b.ToTable("Position", (string)null);
-                });
 
             modelBuilder.Entity("OnlineCourseManagement.Models.Course", b =>
                 {
@@ -386,18 +276,6 @@ namespace OnlineCourseManagement.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
-
                     b.Property<byte[]>("ProfileImage")
                         .HasColumnType("varbinary(max)");
 
@@ -409,12 +287,6 @@ namespace OnlineCourseManagement.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("UserPassword")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -423,94 +295,7 @@ namespace OnlineCourseManagement.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Users__3214EC079E27A083");
 
-                    b.HasIndex(new[] { "Email" }, "UQ_Users_Email")
-                        .IsUnique();
-
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.UsersPosition", b =>
-                {
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("PositionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("(newid())");
-
-                    b.HasKey("UsersId", "PositionId")
-                        .HasName("PK__UsersPos__254209C504877765");
-
-                    b.HasIndex("PositionId");
-
-                    b.ToTable("UsersPosition", (string)null);
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Lecture", b =>
-                {
-                    b.HasOne("OnlineCourseManagement.Models.Course", "Course")
-                        .WithMany("Lectures")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Course_Lecture");
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.LectureVideo", b =>
-                {
-                    b.HasOne("OnlineCourseManagement.Models.Lecture", "Lecture")
-                        .WithMany("LectureVideos")
-                        .HasForeignKey("LectureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Lecture_LectureVideos");
-
-                    b.Navigation("Lecture");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.UsersPosition", b =>
-                {
-                    b.HasOne("OnlineCourseManagement.Models.Position", "Position")
-                        .WithMany("UsersPositions")
-                        .HasForeignKey("PositionId")
-                        .IsRequired()
-                        .HasConstraintName("FK__UsersPosi__Posit__797309D9");
-
-                    b.HasOne("OnlineCourseManagement.Models.User", "Users")
-                        .WithMany("UsersPositions")
-                        .HasForeignKey("UsersId")
-                        .IsRequired()
-                        .HasConstraintName("FK__UsersPosi__Users__787EE5A0");
-
-                    b.Navigation("Position");
-
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Course", b =>
-                {
-                    b.Navigation("Lectures");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Lecture", b =>
-                {
-                    b.Navigation("LectureVideos");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Position", b =>
-                {
-                    b.Navigation("UsersPositions");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.User", b =>
-                {
-                    b.Navigation("UsersPositions");
                 });
 
             modelBuilder.Entity("OnlineCourseManagement.Models.Lecture", b =>
