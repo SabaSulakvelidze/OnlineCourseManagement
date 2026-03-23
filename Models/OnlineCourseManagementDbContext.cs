@@ -27,13 +27,9 @@ public partial class OnlineCourseManagementDbContext : DbContext
 
     public virtual DbSet<StudentsCourse> StudentsCourses { get; set; }
 
-    public virtual DbSet<LecturersCourse> LecturersCourses { get; set; }
-
     public virtual DbSet<Payment> Payments { get; set; }
 
     public virtual DbSet<Purchase> Purchases { get; set; }
-
-    public virtual DbSet<StudentsCourse> StudentsCourses { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
