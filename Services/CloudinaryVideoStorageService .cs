@@ -1,7 +1,7 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Options;
-using OnlineCourseManagement.CloudeStorage;
+using OnlineCourseManagement.Models.CloudeStorage;
 using OnlineCourseManagement.Models.Responses;
 
 namespace OnlineCourseManagement.Services

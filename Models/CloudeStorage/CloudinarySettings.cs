@@ -1,4 +1,4 @@
-﻿namespace OnlineCourseManagement.CloudeStorage
+﻿namespace OnlineCourseManagement.Models.CloudeStorage
 {
     public class CloudinarySettings
     {

@@ -5,6 +5,6 @@ namespace OnlineCourseManagement.Services
 {
     public interface IPurchaseService
     {
-        Task<PurchaseResponse> BuyCourseAsync(BuyCourseRequest request);
+        Task<PurchaseCourseResponse> BuyCourseAsync(PurchaseCourseRequest request);
     }
 }

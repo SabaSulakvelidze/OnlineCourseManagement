@@ -1,6 +1,6 @@
 ﻿namespace OnlineCourseManagement.Models.Requests
 {
-    public class BuyCourseRequest
+    public class PurchaseCourseRequest
     {
         public int UserId { get; set; }
         public int CourseId { get; set; }

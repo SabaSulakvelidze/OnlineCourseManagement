@@ -11,7 +11,7 @@ namespace OnlineCourseManagement.Controllers
     public class PurchasesController(PurchaseService purchaseService) : ControllerBase
     {
         [HttpPost("buy")]
-        public async Task<ActionResult<PurchaseResponse>> BuyCourse(BuyCourseRequest request)
+        public async Task<ActionResult<PurchaseCourseResponse>> BuyCourse(PurchaseCourseRequest request)
         {
             var result = await purchaseService.BuyCourseAsync(request);
             return Ok(result);

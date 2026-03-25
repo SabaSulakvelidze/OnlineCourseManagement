@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnlineCourseManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialClean : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,11 +19,25 @@ namespace OnlineCourseManagement.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PriceCurrency = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__Courses__3214EC079C42C126", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Position",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newid())"),
+                    PositionName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__Position__3214EC07D9D8112D", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -35,7 +49,10 @@ namespace OnlineCourseManagement.Migrations
                     Username = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     ProfileImageFileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    ProfileImageContentType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
+                    ProfileImageContentType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    UserPassword = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,19 +113,20 @@ namespace OnlineCourseManagement.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<int>(type: "int", unicode: false, maxLength: 50, nullable: false),
+                    Currency = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Purchase__3214EC0757BF6E1A", x => x.Id);
+                    table.PrimaryKey("PK__Purchase__3214EC07CA029FCE", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Purchases_Courses",
+                        name: "FK__Purchases__Cours__17F790F9",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Purchases_Users",
+                        name: "FK__Purchases__UserI__17036CC0",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
@@ -121,7 +139,7 @@ namespace OnlineCourseManagement.Migrations
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false),
                     EnrolledAT = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
-                    Status = table.Column<string>(type: "varchar(60)", unicode: false, maxLength: 60, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     Grade = table.Column<int>(type: "int", nullable: true, defaultValue: 0),
                     Progress = table.Column<int>(type: "int", nullable: true, defaultValue: 0)
                 },
@@ -136,6 +154,29 @@ namespace OnlineCourseManagement.Migrations
                     table.ForeignKey(
                         name: "FK__StudentsC__Stude__05D8E0BE",
                         column: x => x.StudentId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsersPosition",
+                columns: table => new
+                {
+                    UsersId = table.Column<int>(type: "int", nullable: false),
+                    PositionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newid())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__UsersPos__254209C504877765", x => new { x.UsersId, x.PositionId });
+                    table.ForeignKey(
+                        name: "FK__UsersPosi__Posit__797309D9",
+                        column: x => x.PositionId,
+                        principalTable: "Position",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK__UsersPosi__Users__787EE5A0",
+                        column: x => x.UsersId,
                         principalTable: "Users",
                         principalColumn: "Id");
                 });
@@ -163,31 +204,6 @@ namespace OnlineCourseManagement.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Payments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PurchaseId = table.Column<int>(type: "int", nullable: false),
-                    Provider = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    TransactionId = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Currency = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false),
-                    Status = table.Column<int>(type: "int", unicode: false, maxLength: 50, nullable: false),
-                    PaidAt = table.Column<DateTime>(type: "datetime", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Payments__3214EC077FD34294", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Payments_Purchases",
-                        column: x => x.PurchaseId,
-                        principalTable: "Purchases",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_LecturersCourses_CourseId",
                 table: "LecturersCourses",
@@ -204,25 +220,30 @@ namespace OnlineCourseManagement.Migrations
                 column: "LectureId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_PurchaseId",
-                table: "Payments",
-                column: "PurchaseId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Purchases_CourseId",
                 table: "Purchases",
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "UX_Purchases_User_Course",
+                name: "IX_Purchases_UserId",
                 table: "Purchases",
-                columns: new[] { "UserId", "CourseId" },
-                unique: true);
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StudentsCourses_CourseId",
                 table: "StudentsCourses",
                 column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "UQ_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersPosition_PositionId",
+                table: "UsersPosition",
+                column: "PositionId");
         }
 
         /// <inheritdoc />
@@ -235,22 +256,25 @@ namespace OnlineCourseManagement.Migrations
                 name: "LectureVideos");
 
             migrationBuilder.DropTable(
-                name: "Payments");
+                name: "Purchases");
 
             migrationBuilder.DropTable(
                 name: "StudentsCourses");
 
             migrationBuilder.DropTable(
+                name: "UsersPosition");
+
+            migrationBuilder.DropTable(
                 name: "Lectures");
 
             migrationBuilder.DropTable(
-                name: "Purchases");
-
-            migrationBuilder.DropTable(
-                name: "Courses");
+                name: "Position");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Courses");
         }
     }
 }
