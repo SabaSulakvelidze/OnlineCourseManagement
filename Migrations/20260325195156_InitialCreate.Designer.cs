@@ -12,7 +12,7 @@ using OnlineCourseManagement.Models;
 namespace OnlineCourseManagement.Migrations
 {
     [DbContext(typeof(OnlineCourseManagementDbContext))]
-    [Migration("20260325193344_InitialCreate")]
+    [Migration("20260325195156_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -168,7 +168,7 @@ namespace OnlineCourseManagement.Migrations
                     b.ToTable("Position", (string)null);
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourse", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourses", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -359,7 +359,7 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("Lecturer");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourse", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourses", b =>
                 {
                     b.HasOne("OnlineCourseManagement.Models.Course", "Course")
                         .WithMany("Purchases")

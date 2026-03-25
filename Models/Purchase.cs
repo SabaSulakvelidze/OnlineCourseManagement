@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OnlineCourseManagement.Models;
 
-public partial class PurchaseCourse
+public partial class Purchase
 {
     public int Id { get; set; }
 

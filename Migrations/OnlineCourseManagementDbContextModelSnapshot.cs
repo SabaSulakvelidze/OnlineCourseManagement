@@ -165,7 +165,7 @@ namespace OnlineCourseManagement.Migrations
                     b.ToTable("Position", (string)null);
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourse", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourses", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -356,7 +356,7 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("Lecturer");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourse", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourses", b =>
                 {
                     b.HasOne("OnlineCourseManagement.Models.Course", "Course")
                         .WithMany("Purchases")

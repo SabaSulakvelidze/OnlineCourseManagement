@@ -32,18 +32,18 @@ namespace OnlineCourseManagement.Services
             if (alreadyPurchased)
                 throw new Exception("User already purchased this course.");
 
-            var purchase = new PurchaseCourse
+            var purchase = new Purchase
             {
                 UserId = request.UserId,
                 CourseId = request.CourseId,
                 Price = course.Price,
+                Currency = course.PriceCurrency,
                 Status = (int)PurchaseStatus.Pending,
                 CreatedAt = DateTime.UtcNow
             };
 
             context.Purchases.Add(purchase);
             await context.SaveChangesAsync();
-
 
             var gatewayResult = await paymentGateway.ProcessPaymentAsync(new PaymentGatewayRequest
             {
@@ -56,28 +56,8 @@ namespace OnlineCourseManagement.Services
                 Cvv = request.Cvv
             });
 
-
-            if (gatewayResult.IsSuccess)
-            {
-                purchase.Status = (int)PurchaseStatus.Paid;
-
-                // optionally enroll user after successful payment
-                /*var enrollment = new StudentsCourse
-                {
-                    StudentId = request.UserId,
-                    CourseId = request.CourseId,
-                    EnrolledAt = DateTime.UtcNow,
-                    Status = "Active",
-                    Grade = 0,
-                    Progress = 0
-                };
-
-                context.StudentsCourses.Add(enrollment);*/
-            }
-            else
-            {
-                purchase.Status = (int)PurchaseStatus.Failed;
-            }
+            if (gatewayResult.IsSuccess) purchase.Status = (int)PurchaseStatus.Paid;
+            else purchase.Status = (int)PurchaseStatus.Failed;
 
             await context.SaveChangesAsync();
 

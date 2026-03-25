@@ -21,11 +21,11 @@ public partial class User
 
     public string PhoneNumber { get; set; } = null!;
 
-    public virtual ICollection<LecturersCourse> LecturersCourses { get; set; } = new List<LecturersCourse>();
+    public virtual ICollection<LecturersCourse> LecturersCourses { get; set; } = [];
 
-    public virtual ICollection<PurchaseCourse> Purchases { get; set; } = new List<PurchaseCourse>();
+    public virtual ICollection<Purchase> Purchases { get; set; } = [];
 
-    public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
+    public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = [];
 
-    public virtual ICollection<UsersPosition> UsersPositions { get; set; } = new List<UsersPosition>();
+    public virtual ICollection<UsersPosition> UsersPositions { get; set; } = [];
 }

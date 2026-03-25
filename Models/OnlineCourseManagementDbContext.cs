@@ -25,7 +25,7 @@ public partial class OnlineCourseManagementDbContext : DbContext
 
     public virtual DbSet<Position> Positions { get; set; }
 
-    public virtual DbSet<PurchaseCourse> Purchases { get; set; }
+    public virtual DbSet<Purchase> Purchases { get; set; }
 
     public virtual DbSet<StudentsCourse> StudentsCourses { get; set; }
 
@@ -116,7 +116,7 @@ public partial class OnlineCourseManagementDbContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<PurchaseCourse>(entity =>
+        modelBuilder.Entity<Purchase>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Purchase__3214EC07CA029FCE");
 

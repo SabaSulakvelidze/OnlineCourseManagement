@@ -8,7 +8,7 @@ namespace OnlineCourseManagement.Mappers
     {
         public PurchaseCourseMapping()
         {
-            CreateMap<PurchaseCourse, PurchaseCourseResponse>();
+            CreateMap<Purchase, PurchaseCourseResponse>();
         }
     }
 }
