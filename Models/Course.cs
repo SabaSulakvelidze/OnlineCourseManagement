@@ -21,7 +21,7 @@ public partial class Course
 
     public virtual ICollection<Lecture> Lectures { get; set; } = new List<Lecture>();
 
-    public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
-
     public virtual ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
+
+    public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
 }

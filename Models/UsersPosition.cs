@@ -5,11 +5,11 @@ namespace OnlineCourseManagement.Models;
 
 public partial class UsersPosition
 {
-    public Guid Id { get; set; }
-
     public int UsersId { get; set; }
 
     public Guid PositionId { get; set; }
+
+    public Guid Id { get; set; }
 
     public virtual Position Position { get; set; } = null!;
 

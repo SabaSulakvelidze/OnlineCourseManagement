@@ -37,118 +37,14 @@ namespace OnlineCourseManagement.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<string>("Title")
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("PriceCurrency")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id")
-                        .HasName("PK__Courses__3214EC079C42C126");
-
-                    b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Lecture", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id")
-                        .HasName("PK__Lectures__3214EC0749266654");
-
-                    b.HasIndex(new[] { "CourseId" }, "IX_Lectures_CourseId");
-
-                    b.ToTable("Lectures");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.LectureVideo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("LectureId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OriginalFileName")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("PublicId")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("VideoUrl")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.HasKey("Id")
-                        .HasName("PK__LectureV__3214EC0765EDDA64");
-
-                    b.HasIndex(new[] { "LectureId" }, "IX_LectureVideos_LectureId");
-
-                    b.ToTable("LectureVideos");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Position", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("(newid())");
-
-                    b.Property<string>("PositionName")
-                        .IsRequired()
-                        .HasMaxLength(50)
+                        .HasMaxLength(10)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id")
-                        .HasName("PK__Position__3214EC07D9D8112D");
-
-                    b.ToTable("Position", (string)null);
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Course", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -245,64 +141,31 @@ namespace OnlineCourseManagement.Migrations
                     b.HasKey("LecturerId", "CourseId")
                         .HasName("PK__Lecturer__36EA6E27A308D3F4");
 
-                    b.HasIndex("CourseId");
+                    b.HasIndex(new[] { "CourseId" }, "IX_LecturersCourses_CourseId");
 
                     b.ToTable("LecturersCourses");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.Payment", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Position", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("(newid())");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.Property<string>("Currency")
+                    b.Property<string>("PositionName")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<DateTime?>("PaidAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Provider")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<int>("PurchaseId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("int");
-
-                    b.Property<string>("TransactionId")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("Id")
-                        .HasName("PK__Payments__3214EC077FD34294");
+                        .HasName("PK__Position__3214EC07D9D8112D");
 
-                    b.HasIndex("PurchaseId");
-
-                    b.ToTable("Payments");
+                    b.ToTable("Position", (string)null);
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.Purchase", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourses", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -318,24 +181,27 @@ namespace OnlineCourseManagement.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(10)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<int>("Status")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__Purchase__3214EC0757BF6E1A");
+                        .HasName("PK__Purchase__3214EC07CA029FCE");
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex(new[] { "UserId", "CourseId" }, "UX_Purchases_User_Course")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Purchases");
                 });
@@ -364,16 +230,13 @@ namespace OnlineCourseManagement.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(60)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("StudentId", "CourseId")
                         .HasName("PK__Students__5E57FC837298EC71");
 
-                    b.HasIndex("CourseId");
+                    b.HasIndex(new[] { "CourseId" }, "IX_StudentsCourses_CourseId");
 
                     b.ToTable("StudentsCourses");
                 });
@@ -445,72 +308,9 @@ namespace OnlineCourseManagement.Migrations
                     b.HasKey("UsersId", "PositionId")
                         .HasName("PK__UsersPos__254209C504877765");
 
-                    b.HasIndex("PositionId");
+                    b.HasIndex(new[] { "PositionId" }, "IX_UsersPosition_PositionId");
 
                     b.ToTable("UsersPosition", (string)null);
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Lecture", b =>
-                {
-                    b.HasOne("OnlineCourseManagement.Models.Course", "Course")
-                        .WithMany("Lectures")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Course_Lecture");
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.LectureVideo", b =>
-                {
-                    b.HasOne("OnlineCourseManagement.Models.Lecture", "Lecture")
-                        .WithMany("LectureVideos")
-                        .HasForeignKey("LectureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Lecture_LectureVideos");
-
-                    b.Navigation("Lecture");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.UsersPosition", b =>
-                {
-                    b.HasOne("OnlineCourseManagement.Models.Position", "Position")
-                        .WithMany("UsersPositions")
-                        .HasForeignKey("PositionId")
-                        .IsRequired()
-                        .HasConstraintName("FK__UsersPosi__Posit__797309D9");
-
-                    b.HasOne("OnlineCourseManagement.Models.User", "Users")
-                        .WithMany("UsersPositions")
-                        .HasForeignKey("UsersId")
-                        .IsRequired()
-                        .HasConstraintName("FK__UsersPosi__Users__787EE5A0");
-
-                    b.Navigation("Position");
-
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Course", b =>
-                {
-                    b.Navigation("Lectures");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Lecture", b =>
-                {
-                    b.Navigation("LectureVideos");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Position", b =>
-                {
-                    b.Navigation("UsersPositions");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.User", b =>
-                {
-                    b.Navigation("UsersPositions");
                 });
 
             modelBuilder.Entity("OnlineCourseManagement.Models.Lecture", b =>
@@ -556,30 +356,19 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("Lecturer");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.Payment", b =>
-                {
-                    b.HasOne("OnlineCourseManagement.Models.Purchase", "Purchase")
-                        .WithMany("Payments")
-                        .HasForeignKey("PurchaseId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Payments_Purchases");
-
-                    b.Navigation("Purchase");
-                });
-
-            modelBuilder.Entity("OnlineCourseManagement.Models.Purchase", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourses", b =>
                 {
                     b.HasOne("OnlineCourseManagement.Models.Course", "Course")
                         .WithMany("Purchases")
                         .HasForeignKey("CourseId")
                         .IsRequired()
-                        .HasConstraintName("FK_Purchases_Courses");
+                        .HasConstraintName("FK__Purchases__Cours__17F790F9");
 
                     b.HasOne("OnlineCourseManagement.Models.User", "User")
                         .WithMany("Purchases")
                         .HasForeignKey("UserId")
                         .IsRequired()
-                        .HasConstraintName("FK_Purchases_Users");
+                        .HasConstraintName("FK__Purchases__UserI__17036CC0");
 
                     b.Navigation("Course");
 
@@ -605,6 +394,25 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("OnlineCourseManagement.Models.UsersPosition", b =>
+                {
+                    b.HasOne("OnlineCourseManagement.Models.Position", "Position")
+                        .WithMany("UsersPositions")
+                        .HasForeignKey("PositionId")
+                        .IsRequired()
+                        .HasConstraintName("FK__UsersPosi__Posit__797309D9");
+
+                    b.HasOne("OnlineCourseManagement.Models.User", "Users")
+                        .WithMany("UsersPositions")
+                        .HasForeignKey("UsersId")
+                        .IsRequired()
+                        .HasConstraintName("FK__UsersPosi__Users__787EE5A0");
+
+                    b.Navigation("Position");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("OnlineCourseManagement.Models.Course", b =>
                 {
                     b.Navigation("LecturersCourses");
@@ -621,9 +429,9 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("LectureVideos");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.Purchase", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Position", b =>
                 {
-                    b.Navigation("Payments");
+                    b.Navigation("UsersPositions");
                 });
 
             modelBuilder.Entity("OnlineCourseManagement.Models.User", b =>
@@ -633,6 +441,8 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("Purchases");
 
                     b.Navigation("StudentsCourses");
+
+                    b.Navigation("UsersPositions");
                 });
 #pragma warning restore 612, 618
         }

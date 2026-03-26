@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Enums;
 using OnlineCourseManagement.Models.Requests;
@@ -8,10 +10,11 @@ namespace OnlineCourseManagement.Services
 {
     public class PurchaseService(
         OnlineCourseManagementDbContext context,
-        IPaymentGateway paymentGateway
+        IPaymentGateway paymentGateway,
+        IMapper mapper
         ) : IPurchaseService
     {
-        public async Task<PurchaseResponse> BuyCourseAsync(BuyCourseRequest request)
+        public async Task<PurchaseCourseResponse> BuyCourseAsync(PurchaseCourseRequest request)
         {
             var user = await context.Users
             .FirstOrDefaultAsync(u => u.Id == request.UserId)
@@ -24,7 +27,7 @@ namespace OnlineCourseManagement.Services
             var alreadyPurchased = await context.Purchases
                 .AnyAsync(p => p.UserId == request.UserId
                             && p.CourseId == request.CourseId
-                            && p.Status == (int) PurchaseStatus.Paid);
+                            && p.Status == (int)PurchaseStatus.Paid);
 
             if (alreadyPurchased)
                 throw new Exception("User already purchased this course.");
@@ -34,6 +37,7 @@ namespace OnlineCourseManagement.Services
                 UserId = request.UserId,
                 CourseId = request.CourseId,
                 Price = course.Price,
+                Currency = course.PriceCurrency,
                 Status = (int)PurchaseStatus.Pending,
                 CreatedAt = DateTime.UtcNow
             };
@@ -41,23 +45,10 @@ namespace OnlineCourseManagement.Services
             context.Purchases.Add(purchase);
             await context.SaveChangesAsync();
 
-            var payment = new Payment
-            {
-                PurchaseId = purchase.Id,
-                Provider = "FakeBank",
-                Amount = purchase.Price,
-                Currency = course.PriceCurrency,
-                Status = (int) PaymentStatus.Pending,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            context.Payments.Add(payment);
-            await context.SaveChangesAsync();
-
             var gatewayResult = await paymentGateway.ProcessPaymentAsync(new PaymentGatewayRequest
             {
-                Amount = payment.Amount,
-                Currency = payment.Currency,
+                Amount = course.Price,
+                Currency = course.PriceCurrency,
                 CardHolderName = request.CardHolderName,
                 CardNumber = request.CardNumber,
                 ExpiryMonth = request.ExpiryMonth,
@@ -65,45 +56,13 @@ namespace OnlineCourseManagement.Services
                 Cvv = request.Cvv
             });
 
-            payment.TransactionId = gatewayResult.TransactionId;
-
-            if (gatewayResult.IsSuccess)
-            {
-                payment.Status = (int)PaymentStatus.Success;
-                payment.PaidAt = DateTime.UtcNow;
-                purchase.Status = (int)PurchaseStatus.Paid;
-
-                // optionally enroll user after successful payment
-                /*var enrollment = new StudentsCourse
-                {
-                    StudentId = request.UserId,
-                    CourseId = request.CourseId,
-                    EnrolledAt = DateTime.UtcNow,
-                    Status = "Active",
-                    Grade = 0,
-                    Progress = 0
-                };
-
-                context.StudentsCourses.Add(enrollment);*/
-            }
-            else
-            {
-                payment.Status = (int)PaymentStatus.Failed;
-                purchase.Status = (int)PurchaseStatus.Failed;
-            }
+            if (gatewayResult.IsSuccess) purchase.Status = (int)PurchaseStatus.Paid;
+            else purchase.Status = (int)PurchaseStatus.Failed;
 
             await context.SaveChangesAsync();
 
-            return new PurchaseResponse
-            {
-                PurchaseId = purchase.Id,
-                CourseId = purchase.CourseId,
-                UserId = purchase.UserId,
-                PurchaseStatus = purchase.Status.ToString(),
-                PaymentStatus = payment.Status.ToString(),
-                TransactionId = payment.TransactionId,
-                Message = gatewayResult.Message
-            };
+            return mapper.Map<PurchaseCourseResponse>(purchase);
         }
+        
     }
 }

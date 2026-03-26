@@ -11,7 +11,7 @@ public partial class StudentsCourse
 
     public DateTime? EnrolledAt { get; set; }
 
-    public string Status { get; set; } = null!;
+    public int Status { get; set; }
 
     public int? Grade { get; set; }
 
