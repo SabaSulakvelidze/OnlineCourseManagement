@@ -1,5 +1,6 @@
 ﻿using FinalProject.Models.Requests;
 using Microsoft.AspNetCore.Http;
+using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -41,7 +42,7 @@ namespace OnlineCourseManagement.Controllers
                 .Include(u => u.UsersPositions)
                 .ThenInclude(p => p.Position)
                 .FirstOrDefaultAsync(
-                item => item.Email == auth.Email && item.UserPassword == auth.UserPassword
+                item => item.Email == auth.Email 
                 );
 
             if(result == null)
@@ -49,12 +50,21 @@ namespace OnlineCourseManagement.Controllers
                 return BadRequest("ესეთი იუზერი არ არსებობ");
             }
 
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(auth.UserPassword, result.UserPassword);
+
+            if (!isPasswordValid)
+            {
+                return BadRequest("Invalid password");
+            }
+
+
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name,result.Email),
                 new Claim("UserId",result.Id.ToString())
 
             };
+
             var colection = result.UsersPositions.Select(item => item.Position.PositionName);
             foreach(var item in colection)
             {

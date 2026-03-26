@@ -1,5 +1,5 @@
 ﻿
-
+using BCrypt.Net;
 using AutoMapper;
 using FinalProject.Models.Requests;
 using FinalProject.Models.Responses;
@@ -35,6 +35,8 @@ namespace OnlineCourseManagement.Service
 
             var user = mapper.Map<User>(request);
 
+            user.UserPassword = BCrypt.Net.BCrypt.HashPassword(request.UserPassword);
+
             var defaultImagePath = Path.Combine("Assets", "defaultProfilePicture.png");
             var imageBytes = await File.ReadAllBytesAsync(defaultImagePath);
 
@@ -68,6 +70,8 @@ namespace OnlineCourseManagement.Service
         {
             var user = await context.Users.FindAsync(id)
                 ?? throw new Exception($"User with id {id} not found");
+
+
 
             mapper.Map(request, user);
 

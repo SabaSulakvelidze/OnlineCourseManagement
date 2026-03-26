@@ -120,6 +120,10 @@ public partial class OnlineCourseManagementDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Purchase__3214EC07CA029FCE");
 
+            entity.HasIndex(e => e.CourseId, "IX_Purchases_CourseId");
+
+            entity.HasIndex(e => e.UserId, "IX_Purchases_UserId");
+
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -177,9 +181,6 @@ public partial class OnlineCourseManagementDbContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.ProfileImageContentType).HasMaxLength(50);
             entity.Property(e => e.ProfileImageFileName).HasMaxLength(255);
-            entity.Property(e => e.UserPassword)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.Username).HasMaxLength(100);
         });
 
