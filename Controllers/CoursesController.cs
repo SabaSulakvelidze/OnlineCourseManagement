@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
@@ -11,53 +12,36 @@ namespace OnlineCourseManagement.Controllers
     public class CoursesController(ICourseService courseService) : ControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult<CourseResponse>> Create(CreateCourseRequest request)
+        public async Task<ActionResult<CourseResponse>> CreateCourse(CreateCourseRequest request)
         {
-            if (!ModelState.IsValid)
-                return ValidationProblem(ModelState);
-
-            var result = await courseService.CreateAsync(request);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            return StatusCode(StatusCodes.Status201Created, await courseService.CreateCourse(request));
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<CourseResponse>>> GetAll()
+        public async Task<ActionResult<List<CourseResponse>>> GetAllCourses()
         {
-            var result = await courseService.GetAllAsync();
+            var result = await courseService.GetAllCourses();
             return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<CourseResponse>> GetById(int id)
+        public async Task<ActionResult<CourseResponse>> GetCourseById(int id)
         {
-            var result = await courseService.GetByIdAsync(id);
-            if (result == null)
-                return NotFound($"Course with id {id} was not found.");
-
-            return Ok(result);
+            return Ok(await courseService.GetCourseById(id));
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<CourseResponse>> Update(int id, UpdateCourseRequest request)
+        public async Task<ActionResult<CourseResponse>> UpdateCourse(int id, UpdateCourseRequest request)
         {
-            if (!ModelState.IsValid)
-                return ValidationProblem(ModelState);
-
-            var result = await courseService.UpdateAsync(id, request);
-            if (result == null)
-                return NotFound($"Course with id {id} was not found.");
-
-            return Ok(result);
+            return Ok(await courseService.UpdateCourse(id, request));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteCourse(int id)
         {
-            var deleted = await courseService.DeleteAsync(id);
-            if (!deleted)
-                return NotFound($"Course with id {id} was not found.");
-
-            return NoContent();
+            await courseService.DeleteCourse(id);
+            
+            return Ok($"Course with id {id} was deleted!");
         }
     }
 }

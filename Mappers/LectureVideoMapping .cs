@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OnlineCourseManagement.Models;
+using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 
 namespace OnlineCourseManagement.Mappers
@@ -8,6 +9,7 @@ namespace OnlineCourseManagement.Mappers
     {
         public LectureVideoMapping()
         {
+            CreateMap<AddLectureVideoRequest, LectureVideo>();
             CreateMap<LectureVideo, LectureVideoResponse>();
         }
     }

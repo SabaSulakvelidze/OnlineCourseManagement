@@ -5,11 +5,11 @@ namespace OnlineCourseManagement.Services
 {
     public interface ILectureService
     {
-        Task<LectureResponse?> CreateAsync(CreateLectureRequest request);
-        Task<List<LectureResponse>> GetByCourseIdAsync(int courseId);
-        Task<LectureResponse?> GetByIdAsync(int id);
-        Task<LectureResponse?> UpdateAsync(int id, UpdateLectureRequest request);
-        Task<bool> DeleteAsync(int id);
-        Task<LectureVideoResponse?> AddVideoAsync(AddLectureVideoRequest request);
+        Task<LectureResponse?> CreateLecture(CreateLectureRequest request);
+        Task<List<LectureResponse>> GetLectureByCourseId(int courseId);
+        Task<LectureResponse?> GetLectureById(int id);
+        Task<LectureResponse?> UpdateLecture(int id, UpdateLectureRequest request);
+        Task DeleteLecture(int id);
+        Task<LectureVideoResponse?> AddVideoToLecture(AddLectureVideoRequest request);
     }
 }
