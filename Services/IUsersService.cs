@@ -1,6 +1,7 @@
 ﻿using FinalProject.Models.Requests;
 using FinalProject.Models.Responses;
 using Microsoft.AspNetCore.Identity.Data;
+using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Responses;
 
 namespace OnlineCourseManagement.Service
@@ -21,5 +22,7 @@ namespace OnlineCourseManagement.Service
 
         Task<UserProfileImageResponse?> GetProfilePictureAsync(int userId);
 
+        Task<List<UsersByPosition>> GetUsersByPosition(string positionName);
+      
     }
 }

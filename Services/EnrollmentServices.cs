@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
+using OnlineCourseManagement.Models.Entities;
 using OnlineCourseManagement.Models.Enums;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
@@ -22,10 +23,11 @@ namespace OnlineCourseManagement.Services
 
             var lecturer = await context.Users
                 .Include(u => u.UsersPositions)
+                    .ThenInclude(up => up.Position)
                 .FirstOrDefaultAsync(u => u.Id == request.LecturerId)
                 ?? throw new ElementNotFoundException($"User with id {request.LecturerId} was not found.");
 
-            if (lecturer.UsersPositions.Select(up => up.Position.PositionName).ToList().Contains("Lecturer"))
+            if (!lecturer.UsersPositions.Any(up => up.Position.PositionName == "Lecturer"))
                 throw new ConflictException($"User with id {request.LecturerId} is not a lecturer.");
 
             var alreadyAssigned = await context.LecturersCourses
@@ -56,7 +58,7 @@ namespace OnlineCourseManagement.Services
                 .FirstOrDefaultAsync(u => u.Id == request.StudentId)
                 ?? throw new ElementNotFoundException($"User with id {request.StudentId} was not found.");
 
-            if (student.UsersPositions.Select(up => up.Position.PositionName).ToList().Contains("Student"))
+            if (!student.UsersPositions.Any(up => up.Position.PositionName == "Student"))
                 throw new ConflictException($"User with id {request.StudentId} is not a student.");
 
             var alreadyEnrolled = await context.StudentsCourses

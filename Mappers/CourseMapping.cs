@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using FinalProject.Models.Requests;
 using FinalProject.Models.Responses;
-using OnlineCourseManagement.Models;
+using OnlineCourseManagement.Models.Entities;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 

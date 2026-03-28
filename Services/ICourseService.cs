@@ -1,4 +1,5 @@
-﻿using OnlineCourseManagement.Models.Requests;
+﻿using OnlineCourseManagement.Models.Procedures;
+using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 
 namespace OnlineCourseManagement.Services
@@ -10,5 +11,7 @@ namespace OnlineCourseManagement.Services
         Task<CourseResponse?> GetCourseById(int id);
         Task<CourseResponse?> UpdateCourse(int id, UpdateCourseRequest request);
         Task DeleteCourse(int id);
+        Task<List<UsersCourses>> GetUsersCourses(int userId);
+        Task<PurchaseCourseResponse> BuyCourseAsync(PurchaseCourseRequest request);
     }
 }

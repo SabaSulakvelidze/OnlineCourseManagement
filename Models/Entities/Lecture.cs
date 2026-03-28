@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineCourseManagement.Models;
+namespace OnlineCourseManagement.Models.Entities;
 
 public partial class Lecture
 {
