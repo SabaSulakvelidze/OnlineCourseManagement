@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Services;
@@ -10,6 +11,7 @@ namespace OnlineCourseManagement.Controllers
     public class EnrollmentController(IEnrollmentServices service) : ControllerBase
     {
         [HttpPost("/EnrollStudent")]
+        
         public async Task<ActionResult> EnrollStudent(EnrollStudentRequest request)
         {
             if (request == null)

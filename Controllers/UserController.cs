@@ -2,7 +2,7 @@
 using FinalProject.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OnlineCourseManagement.Models;
+using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Service;
 
@@ -61,7 +61,7 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpGet("{userId}/profile-picture")]
-        public async Task<IActionResult> GetProfilePicture(int userId)
+        public async Task<ActionResult> GetProfilePicture(int userId)
         {
             var result = await userService.GetProfilePictureAsync(userId);
 
@@ -71,7 +71,11 @@ namespace OnlineCourseManagement.Controllers
             return File(result.ImageBytes, result.ContentType);
         }
 
-        
-
+        [HttpGet("getUsersByPosition")]
+        public async Task<ActionResult<UsersByPosition>> GetUsersByPosition([FromQuery] string userPosition)
+        {
+            return Ok(await userService.GetUsersByPosition(userPosition));
+        }
+       
     }
 }

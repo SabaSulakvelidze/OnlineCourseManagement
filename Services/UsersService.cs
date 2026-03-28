@@ -1,12 +1,16 @@
 ﻿
-using BCrypt.Net;
 using AutoMapper;
+using BCrypt.Net;
 using FinalProject.Models.Requests;
 using FinalProject.Models.Responses;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using OnlineCourseManagement.Models;
+using OnlineCourseManagement.Models.Entities;
+using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Responses;
+using System.Data;
 
 namespace OnlineCourseManagement.Service
 {
@@ -140,6 +144,14 @@ namespace OnlineCourseManagement.Service
                 ContentType = user.ProfileImageContentType,
                 FileName = user.ProfileImageFileName
             }; ;
+        }
+
+        public async Task<List<UsersByPosition>> GetUsersByPosition(string positionName)
+        {
+            var sqlParams = new SqlParameter("@PositionName", positionName);
+            var result = await context.Set<UsersByPosition>().FromSqlRaw("EXEC GetUsersByPosition @PositionName", sqlParams).ToListAsync();
+
+            return result;
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using OnlineCourseManagement.Models.Entities;
+using OnlineCourseManagement.Models.Procedures;
 
 namespace OnlineCourseManagement.Models;
 
@@ -31,6 +33,10 @@ public partial class OnlineCourseManagementDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UsersByPosition> UsersByPosition { get; set; }
+
+    public virtual DbSet<UsersCourses> UsersCourses { get; set; }
+
     public virtual DbSet<UsersPosition> UsersPositions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -39,6 +45,8 @@ public partial class OnlineCourseManagementDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<UsersByPosition>().HasNoKey().ToView(null);
+
         modelBuilder.Entity<Course>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Courses__3214EC079C42C126");
