@@ -1,7 +1,4 @@
-﻿using FinalProject.Models.Responses;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using OnlineCourseManagement.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 using OnlineCourseManagement.Services;

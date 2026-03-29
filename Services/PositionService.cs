@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FinalProject.Models.Responses;
+using OnlineCourseManagement.Models.Responses;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;

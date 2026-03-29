@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FinalProject.Exceptions;
+using OnlineCourseManagement.Exceptions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,4 @@
-﻿using FinalProject.Models.Requests;
-using Microsoft.AspNetCore.Http;
-using BCrypt.Net;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OnlineCourseManagement.Models;

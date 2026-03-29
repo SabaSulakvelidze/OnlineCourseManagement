@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet;
-using FinalProject.Exceptions;
+using OnlineCourseManagement.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;

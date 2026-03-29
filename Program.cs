@@ -1,5 +1,5 @@
-using FinalProject.Exceptions;
-using FinalProject.Mappers;
+using OnlineCourseManagement.Exceptions;
+using OnlineCourseManagement.Mappers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
