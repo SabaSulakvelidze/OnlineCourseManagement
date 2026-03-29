@@ -1,8 +1,8 @@
 ﻿namespace OnlineCourseManagement.Models.Responses
 {
-    public class PositionResponce
+    public class PositionResponse
     {
-        public string PositionName { get; set; }
+        public required string PositionName { get; set; }
         public Guid Id { get; set; }
     }
 }

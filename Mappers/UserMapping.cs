@@ -2,7 +2,7 @@
 using FinalProject.Models.Requests;
 using FinalProject.Models.Responses;
 using Microsoft.Identity.Client;
-using OnlineCourseManagement.Models.Entities;
+using OnlineCourseManagement.Models;
 
 namespace FinalProject.Mappers
 {

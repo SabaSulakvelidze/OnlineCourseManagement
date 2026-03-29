@@ -47,7 +47,7 @@ namespace OnlineCourseManagement.Controllers
 
             if(result == null)
             {
-                return BadRequest("ესეთი იუზერი არ არსებობ");
+                return BadRequest("ესეთი იუზერი არ არსებობს");
             }
 
             bool isPasswordValid = BCrypt.Net.BCrypt.Verify(auth.UserPassword, result.UserPassword);

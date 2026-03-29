@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineCourseManagement.Models.Entities;
+namespace OnlineCourseManagement.Models;
 
 public partial class User
 {
@@ -24,6 +24,8 @@ public partial class User
     public virtual ICollection<LecturersCourse> LecturersCourses { get; set; } = new List<LecturersCourse>();
 
     public virtual ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
+
+    public virtual ICollection<StudentLectureProgress> StudentLectureProgresses { get; set; } = new List<StudentLectureProgress>();
 
     public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
 

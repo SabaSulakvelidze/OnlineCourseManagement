@@ -4,7 +4,7 @@ using FinalProject.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
-using OnlineCourseManagement.Models.Entities;
+using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Enums;
 using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Requests;
@@ -44,7 +44,7 @@ namespace OnlineCourseManagement.Services
                 .Include(c => c.Lectures)
                     .ThenInclude(l => l.LectureVideos)
                 .FirstOrDefaultAsync(c => c.Id == id) 
-                ?? throw new ElementNotFoundException($"Course with id {id} was not found"); ;
+                ?? throw new ElementNotFoundException($"Course with id {id} was not found");
 
             return mapper.Map<CourseResponse>(course);
         }
