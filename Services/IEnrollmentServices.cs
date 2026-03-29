@@ -9,5 +9,7 @@ namespace OnlineCourseManagement.Services
         Task<ActionResult<StudentsCourseResponse>> EnrollStudent(EnrollStudentRequest request);
 
         Task<ActionResult<LecturersCourseResponse>> AssignLecturer(AssignLecturerRequest request);
+
+        Task<ActionResult<StudentsCourseResponse>> TransferCourse(GiftCourseRequest request);
     }
 }
