@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
-using OnlineCourseManagement.Models.Entities;
+using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Enums;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;

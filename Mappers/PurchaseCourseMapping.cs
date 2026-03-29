@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using OnlineCourseManagement.Models.Entities;
+using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Responses;
 
 namespace OnlineCourseManagement.Mappers

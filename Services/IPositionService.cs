@@ -7,11 +7,11 @@ namespace OnlineCourseManagement.Services
 {
     public interface IPositionService
     {
-        Task<PositionResponce> CreatePosition( ChangePosition request);
+        Task<PositionResponse> CreatePosition( ChangePosition request);
 
-        Task<List<PositionResponce>> GetAllPositions();
+        Task<List<PositionResponse>> GetAllPositions();
 
-        Task<PositionResponce> GetPositionById(Guid id);
+        Task<PositionResponse> GetPositionById(Guid id);
 
 
         Task DeleteUser(Guid id);

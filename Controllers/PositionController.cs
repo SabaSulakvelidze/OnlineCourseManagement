@@ -33,7 +33,7 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PositionResponce>> GetAllPositions()
+        public async Task<ActionResult<PositionResponse>> GetAllPositions()
         {
             var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
 
@@ -46,7 +46,7 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PositionResponce>> GetUserById(Guid id)
+        public async Task<ActionResult<PositionResponse>> GetUserById(Guid id)
         {
             var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
 
@@ -60,7 +60,7 @@ namespace OnlineCourseManagement.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<PositionResponce>> DeleteUser(Guid id)
+        public async Task<ActionResult<PositionResponse>> DeleteUser(Guid id)
         {
             var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
 

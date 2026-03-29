@@ -3,7 +3,7 @@ using FinalProject.Models.Responses;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
-using OnlineCourseManagement.Models.Entities;
+using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 
@@ -13,7 +13,7 @@ namespace OnlineCourseManagement.Services
     {
         
 
-        public async Task<PositionResponce> CreatePosition(ChangePosition request)
+        public async Task<PositionResponse> CreatePosition(ChangePosition request)
         {
             if (request == null)
                 throw new Exception(nameof(request));
@@ -26,7 +26,7 @@ namespace OnlineCourseManagement.Services
             context.Positions.Add(position);
             await context.SaveChangesAsync();
 
-            return mapper.Map<PositionResponce>(position);
+            return mapper.Map<PositionResponse>(position);
         }
 
         public async Task DeleteUser(Guid id)
@@ -39,20 +39,20 @@ namespace OnlineCourseManagement.Services
             await context.SaveChangesAsync();
         }
 
-        public async Task<List<PositionResponce>> GetAllPositions()
+        public async Task<List<PositionResponse>> GetAllPositions()
         {
             var positions = await context.Positions.ToListAsync();
 
-            return mapper.Map<List<PositionResponce>>(positions);
+            return mapper.Map<List<PositionResponse>>(positions);
         }
 
-        public async Task<PositionResponce> GetPositionById(Guid id)
+        public async Task<PositionResponse> GetPositionById(Guid id)
         {
             var position = await context.Positions
                 .FirstOrDefaultAsync(u => u.Id == id)
                 ?? throw new Exception($"Position with id {id} not found");
 
-            return mapper.Map<PositionResponce>(position);
+            return mapper.Map<PositionResponse>(position);
         }
 
         
