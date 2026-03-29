@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Entities;
 using OnlineCourseManagement.Models.Requests;
+using OnlineCourseManagement.Models.Responses;
 
 namespace OnlineCourseManagement.Services
 {
@@ -23,10 +24,12 @@ namespace OnlineCourseManagement.Services
             if (existing != null)
             {
                 mapper.Map(request, existing);
+                existing.UserId = currentUserId;
             }
             else
             {
                 var rating = mapper.Map<Rating>(request);
+                rating.UserId = currentUserId;
                 await context.Ratings.AddAsync(rating);
             }
 
@@ -38,6 +41,17 @@ namespace OnlineCourseManagement.Services
             return await context.Ratings
                 .Where(r => r.CourseId == courseId)
                 .AverageAsync(r => (double?)r.Value) ?? 0;
+        }
+
+        public async Task<List<RatingResponse>> GetReviews(int courseId)
+        {
+            return await context.Ratings
+                 .Where(r => r.CourseId == courseId && r.Review != null)
+                .Select(r => new RatingResponse
+                {
+                    Review = r.Review
+                })
+                .ToListAsync();
         }
 
     }

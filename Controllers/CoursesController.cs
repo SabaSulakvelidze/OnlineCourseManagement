@@ -76,17 +76,18 @@ namespace OnlineCourseManagement.Controllers
         [HttpGet("average/{courseId}")]
         public async Task<IActionResult> GetAverage(int courseId)
         {
-            var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
 
-            if (!permision.Contains("Student"))
-            {
-                return Unauthorized("You have not permision to change");
-            }
 
             var avg = await ratingService.GetAverage(courseId);
             return Ok(avg);
         }
 
+        [HttpGet("reviews/{courseId}")]
+        public async Task<IActionResult> GetReviews(int courseId)
+        {
+            var result = await ratingService.GetReviews(courseId);
+            return Ok(result);
+        }
 
     }
 }
