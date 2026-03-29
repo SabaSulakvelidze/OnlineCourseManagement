@@ -13,7 +13,7 @@ namespace OnlineCourseManagement.Services
     {
         
 
-        public async Task<PositionResponce> CreatePosition(ChangePosition request)
+        public async Task<PositionResponce> CreatePosition(AddPositionRequest request)
         {
             if (request == null)
                 throw new Exception(nameof(request));

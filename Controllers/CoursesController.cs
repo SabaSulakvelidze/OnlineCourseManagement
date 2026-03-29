@@ -10,7 +10,7 @@ namespace OnlineCourseManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CoursesController(ICourseService service) : ControllerBase
+    public class CoursesController(ICourseService service,IRatingService ratingService) : ControllerBase
     {
         [HttpPost]
         public async Task<ActionResult<CourseResponse>> CreateCourse(CreateCourseRequest request)
@@ -57,5 +57,36 @@ namespace OnlineCourseManagement.Controllers
         {
             return Ok(await service.GetUsersCourses(userId));
         }
+
+        [HttpPost("Review")]
+
+        public async Task<ActionResult> CourseReview(RateCourseRequest request)
+        {
+            var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
+
+            if (!permision.Contains("Student"))
+            {
+                return Unauthorized("You have not permision to change");
+            }
+
+            await ratingService.RateCourse(request);
+            return Ok("Rated successfully");
+        }
+
+        [HttpGet("average/{courseId}")]
+        public async Task<IActionResult> GetAverage(int courseId)
+        {
+            var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
+
+            if (!permision.Contains("Student"))
+            {
+                return Unauthorized("You have not permision to change");
+            }
+
+            var avg = await ratingService.GetAverage(courseId);
+            return Ok(avg);
+        }
+
+
     }
 }

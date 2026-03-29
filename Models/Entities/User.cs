@@ -28,4 +28,5 @@ public partial class User
     public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
 
     public virtual ICollection<UsersPosition> UsersPositions { get; set; } = new List<UsersPosition>();
+    public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
 }

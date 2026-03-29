@@ -63,6 +63,8 @@ builder.Services.AddScoped<ILectureService, LectureService>();
 builder.Services.AddScoped<IPaymentGateway, FakePaymentGateway>();
 builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<IEnrollmentServices, EnrollmentServices>();
+builder.Services.AddScoped<IChangePositionService, ChangePositionService>();
+builder.Services.AddScoped<IRatingService,RatingService>();
 
 builder.Services.AddDbContext<OnlineCourseManagementDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

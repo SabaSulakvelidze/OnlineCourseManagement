@@ -1,4 +1,5 @@
 ﻿using FinalProject.Models.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCourseManagement.Models;
@@ -10,13 +11,14 @@ namespace OnlineCourseManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PositionController(IPositionService positionService) : ControllerBase
+    public class PositionController(IPositionService positionService,IChangePositionService changePositionService) : ControllerBase
     {
 
       
         [HttpPost]
+        
 
-        public async Task<ActionResult> AddPosition(ChangePosition request)
+        public async Task<ActionResult> AddPosition(AddPositionRequest request)
         {
             var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
 
@@ -33,6 +35,7 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpGet]
+        
         public async Task<ActionResult<PositionResponce>> GetAllPositions()
         {
             var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
@@ -46,6 +49,7 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpGet("{id}")]
+        
         public async Task<ActionResult<PositionResponce>> GetUserById(Guid id)
         {
             var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
@@ -60,6 +64,7 @@ namespace OnlineCourseManagement.Controllers
 
 
         [HttpDelete("{id}")]
+        
         public async Task<ActionResult<PositionResponce>> DeleteUser(Guid id)
         {
             var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
@@ -74,36 +79,20 @@ namespace OnlineCourseManagement.Controllers
         }
 
 
-        //[HttpPost("Change Position")]
-        //public async Task<ActionResult> ChangePosition(ChangePosition request)
-        //{
+        [HttpPost("Change Position")]
+        
+        public async Task<ActionResult> ChangePosition(ChangePositionRequest request)
+        {
+            var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
 
+            if (!permision.Contains("Admin"))
+            {
+                return Unauthorized("You have not permision to change");
+            }
 
+            await changePositionService.ChangePosition(request);
+            return Ok("Position updated");
 
-
-        //    var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
-
-
-
-        //    if (!permision.Contains("Admin"))
-        //    {
-        //        return Unauthorized("You have not permision to change");
-        //    }
-
-        //    return Ok("done!!!!");
-        //    //Position position = new Position();
-        //    //position.PositionName = request.PositionName;
-
-        //    //context.Positions.Add(position);
-
-        //    //await context.SaveChangesAsync();
-
-        //    //return Ok(position);
-
-
-
-
-
-        //}
+        }
     }
 }

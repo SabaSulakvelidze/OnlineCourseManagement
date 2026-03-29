@@ -11,9 +11,10 @@ namespace OnlineCourseManagement.Mappers
     {
         public PositionMapping()
         {
-            CreateMap<ChangePosition, Position>();
+            CreateMap<AddPositionRequest, Position>();
             CreateMap<UpdatePositionRequest, Position>();
             CreateMap<Position, PositionResponce>();
+            CreateMap<ChangePositionRequest, UsersPosition>();
         }
     }
 }

@@ -14,6 +14,7 @@ namespace OnlineCourseManagement.Mappers
             CreateMap<CreateCourseRequest, Course>();
             CreateMap<UpdateCourseRequest, Course>();
             CreateMap<Course, CourseResponse>();
+            CreateMap<RateCourseRequest, Rating>();
         }
     }
 }
