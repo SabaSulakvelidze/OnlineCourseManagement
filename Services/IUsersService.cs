@@ -1,5 +1,5 @@
-﻿using FinalProject.Models.Requests;
-using FinalProject.Models.Responses;
+﻿using OnlineCourseManagement.Models.Requests;
+using OnlineCourseManagement.Models.Responses;
 using Microsoft.AspNetCore.Identity.Data;
 using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Responses;

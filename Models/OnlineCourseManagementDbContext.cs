@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models.Entities;
+using OnlineCourseManagement.Models.Procedures;
 
 namespace OnlineCourseManagement.Models;
 
@@ -28,6 +29,8 @@ public partial class OnlineCourseManagementDbContext : DbContext
 
     public virtual DbSet<Purchase> Purchases { get; set; }
 
+    public virtual DbSet<StudentLectureProgress> StudentLectureProgresses { get; set; }
+
     public virtual DbSet<Rating> Ratings { get; set; }
 
     public virtual DbSet<StudentsCourse> StudentsCourses { get; set; }
@@ -35,6 +38,13 @@ public partial class OnlineCourseManagementDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UsersPosition> UsersPositions { get; set; }
+    public virtual DbSet<UsersPosition> UsersPositions { get; set; }
+
+    public virtual DbSet<UsersByPosition> UsersByPosition { get; set; }
+
+    public virtual DbSet<UsersCourses> UsersCourses { get; set; }
+
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -166,6 +176,25 @@ public partial class OnlineCourseManagementDbContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Ratings_Users");
+        });
+
+        modelBuilder.Entity<StudentLectureProgress>(entity =>
+        {
+            entity.HasKey(e => new { e.StudentId, e.LectureId }).HasName("PK__StudentL__D9B6B4F22068355D");
+
+            entity.ToTable("StudentLectureProgress");
+
+            entity.Property(e => e.CompletedAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Lecture).WithMany(p => p.StudentLectureProgresses)
+                .HasForeignKey(d => d.LectureId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__StudentLe__Lectu__41EDCAC5");
+
+            entity.HasOne(d => d.Student).WithMany(p => p.StudentLectureProgresses)
+                .HasForeignKey(d => d.StudentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__StudentLe__Stude__40F9A68C");
         });
 
         modelBuilder.Entity<StudentsCourse>(entity =>

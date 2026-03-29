@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using FinalProject.Exceptions;
+using OnlineCourseManagement.Exceptions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
-using OnlineCourseManagement.Models.Entities;
 using OnlineCourseManagement.Models.Enums;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
@@ -13,7 +12,8 @@ namespace OnlineCourseManagement.Services
 {
     public class EnrollmentServices(
         OnlineCourseManagementDbContext context,
-        IMapper mapper
+        IMapper mapper,
+        ICurrentUserService currentUserService
         ) : IEnrollmentServices
     {
         public async Task<ActionResult<LecturersCourseResponse>> AssignLecturer(AssignLecturerRequest request)
@@ -79,6 +79,37 @@ namespace OnlineCourseManagement.Services
             await context.SaveChangesAsync();
 
             return mapper.Map<StudentsCourseResponse>(entity);
+        }
+
+        public async Task<ActionResult<StudentsCourseResponse>> TransferCourse(GiftCourseRequest request)
+        {
+            var currentUser = currentUserService.UserId;
+
+            if (!await context.Courses.AnyAsync(c => c.Id == request.CourseId))
+                throw new ElementNotFoundException($"Course with id {request.CourseId} was not found");
+
+            var studentCourse = await context.StudentsCourses
+                .FirstOrDefaultAsync(sc => sc.StudentId == currentUser && sc.CourseId == request.CourseId) 
+                ?? throw new ConflictException($"You have not purchased Course with id {request.CourseId} yet!");
+
+            if (currentUser == request.RecipientId)
+                throw new ConflictException("You cannot transfer a course to yourself.");
+
+            var recipientUser = await context.Users
+                .AnyAsync(u =>
+                    u.Id == request.RecipientId &&
+                    u.UsersPositions.Any(up => up.Position.PositionName == "Student"));
+            if(recipientUser) 
+                throw new ConflictException($"Recipient with id {request.RecipientId} was not found or is not a student.");
+
+            if (await context.StudentsCourses.AnyAsync(sc => sc.StudentId == request.RecipientId && sc.CourseId == request.CourseId))
+                throw new ConflictException($"Recipient already owns course with id {request.CourseId}");
+
+            studentCourse.StudentId = request.RecipientId;
+
+            await context.SaveChangesAsync();
+
+            return mapper.Map<StudentsCourseResponse>(studentCourse);
         }
     }
 }

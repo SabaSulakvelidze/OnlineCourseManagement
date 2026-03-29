@@ -1,4 +1,4 @@
-﻿namespace FinalProject.Models.Responses
+﻿namespace OnlineCourseManagement.Models.Responses
 {
     public class UserResponse
     {

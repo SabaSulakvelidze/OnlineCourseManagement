@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet;
-using FinalProject.Exceptions;
+using OnlineCourseManagement.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
-using OnlineCourseManagement.Models.Entities;
+using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Enums;
 using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Requests;
@@ -44,7 +44,7 @@ namespace OnlineCourseManagement.Services
                 .Include(c => c.Lectures)
                     .ThenInclude(l => l.LectureVideos)
                 .FirstOrDefaultAsync(c => c.Id == id) 
-                ?? throw new ElementNotFoundException($"Course with id {id} was not found"); ;
+                ?? throw new ElementNotFoundException($"Course with id {id} was not found");
 
             return mapper.Map<CourseResponse>(course);
         }
@@ -87,11 +87,11 @@ namespace OnlineCourseManagement.Services
         {
             var user = await context.Users
             .FirstOrDefaultAsync(u => u.Id == request.UserId)
-            ?? throw new Exception($"User with id {request.UserId} was not found.");
+            ?? throw new ElementNotFoundException($"User with id {request.UserId} was not found.");
 
             var course = await context.Courses
                 .FirstOrDefaultAsync(c => c.Id == request.CourseId)
-                ?? throw new Exception($"Course with id {request.CourseId} was not found.");
+                ?? throw new ElementNotFoundException($"Course with id {request.CourseId} was not found.");
 
             var alreadyPurchased = await context.Purchases
                 .AnyAsync(p => p.UserId == request.UserId
@@ -99,7 +99,7 @@ namespace OnlineCourseManagement.Services
                             && p.Status == (int)PurchaseStatus.Paid);
 
             if (alreadyPurchased)
-                throw new Exception("User already purchased this course.");
+                throw new ConflictException("User already purchased this course.");
 
             var purchase = new Purchase
             {

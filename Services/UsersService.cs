@@ -1,16 +1,17 @@
 ﻿
 using AutoMapper;
 using BCrypt.Net;
-using FinalProject.Models.Requests;
-using FinalProject.Models.Responses;
+using OnlineCourseManagement.Models.Requests;
+using OnlineCourseManagement.Models.Responses;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using OnlineCourseManagement.Models;
-using OnlineCourseManagement.Models.Entities;
+using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Responses;
 using System.Data;
+using OnlineCourseManagement.Exceptions;
 
 namespace OnlineCourseManagement.Service
 {
@@ -35,7 +36,7 @@ namespace OnlineCourseManagement.Service
                 throw new Exception(nameof(request));
 
             if (await context.Users.AnyAsync(u => u.Username == request.Username))
-                throw new Exception($"User with username '{request.Username}' already exists");
+                throw new ConflictException($"User with username '{request.Username}' already exists");
 
             var user = mapper.Map<User>(request);
 
@@ -65,7 +66,7 @@ namespace OnlineCourseManagement.Service
         {
             var user = await context.Users
                 .FirstOrDefaultAsync(u => u.Id == id)
-                ?? throw new Exception($"User with id {id} not found");
+                ?? throw new ElementNotFoundException($"User with id {id} not found");
 
             return mapper.Map<UserResponse>(user);
         }
@@ -73,7 +74,7 @@ namespace OnlineCourseManagement.Service
         public async Task<UserResponse> UpdateUser(int id, UpdateUserRequest request)
         {
             var user = await context.Users.FindAsync(id)
-                ?? throw new Exception($"User with id {id} not found");
+                ?? throw new ElementNotFoundException($"User with id {id} not found");
 
 
 
@@ -87,7 +88,7 @@ namespace OnlineCourseManagement.Service
         public async Task DeleteUser(int id)
         {
             var user = await context.Users.FindAsync(id)
-                ?? throw new Exception($"User with id {id} not found");
+                ?? throw new ElementNotFoundException($"User with id {id} not found");
 
             context.Users.Remove(user);
 
@@ -97,21 +98,21 @@ namespace OnlineCourseManagement.Service
         public async Task UploadProfilePictureAsync(int userId, IFormFile file)
         {
             var user = await context.Users.FindAsync(userId)
-                 ?? throw new Exception($"User with id {userId} not found");
+                 ?? throw new ElementNotFoundException($"User with id {userId} not found");
 
             if (file == null || file.Length == 0)
-                throw new Exception("File is empty");
+                throw new ConflictException("File is empty");
 
             if (file.Length > MaxFileSize)
-                throw new Exception("File size must not exceed 2MB");
+                throw new ConflictException("File size must not exceed 2MB");
 
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
             if (!AllowedExtensions.Contains(extension))
-                throw new Exception("Only jpg, jpeg, png, and webp files are allowed");
+                throw new ConflictException("Only jpg, jpeg, png, and webp files are allowed");
 
             if (!AllowedContentTypes.Contains(file.ContentType.ToLowerInvariant()))
-                throw new Exception("Invalid image content type");
+                throw new ConflictException("Invalid image content type");
 
             byte[] imageBytes;
             using (var memoryStream = new MemoryStream())

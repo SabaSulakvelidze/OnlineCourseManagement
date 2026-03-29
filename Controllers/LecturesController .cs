@@ -48,5 +48,11 @@ namespace OnlineCourseManagement.Controllers
         {
             return Ok(await lectureService.AddVideoToLecture(request));
         }
+
+        [HttpPost("complete/{lectureId}")]
+        public async Task<ActionResult<StudentsCourseResponse>> MarkLectureAsCompleted(int lectureId)
+        {
+            return Ok(await lectureService.MarkLectureAsCompleted(lectureId));
+        }
     }
 }

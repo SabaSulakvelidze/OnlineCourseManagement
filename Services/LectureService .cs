@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using FinalProject.Exceptions;
+using Azure.Core;
+using OnlineCourseManagement.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
-using OnlineCourseManagement.Models.Entities;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 
@@ -10,7 +10,8 @@ namespace OnlineCourseManagement.Services
 {
     public class LectureService(
         OnlineCourseManagementDbContext context,
-        IMapper mapper
+        IMapper mapper,
+        ICurrentUserService currentUserService
         ) : ILectureService
     {
         public async Task<LectureResponse?> CreateLecture(CreateLectureRequest request)
@@ -85,5 +86,45 @@ namespace OnlineCourseManagement.Services
             return mapper.Map<LectureVideoResponse>(result);
         }
 
+        public async Task<StudentsCourseResponse> MarkLectureAsCompleted(int lectureId)
+        {
+            var userId = currentUserService.UserId;
+
+            var lecture = await context.Lectures
+               .FirstOrDefaultAsync(l => l.Id == lectureId)
+               ?? throw new ElementNotFoundException($"Lecture with id {lectureId} was not found");
+
+            var studentCourse = await context.StudentsCourses
+                .FirstOrDefaultAsync(sc => sc.StudentId == userId && sc.CourseId == lecture.CourseId)
+                ?? throw new ConflictException($"incorrect Lecture id: {lectureId}");
+
+            var studentLectureProgress = await context.StudentLectureProgresses
+                .FirstOrDefaultAsync(slp => slp.StudentId == userId && slp.LectureId == lectureId);
+
+            if (studentLectureProgress != null)
+                return mapper.Map<StudentsCourseResponse>(studentCourse);
+
+            studentLectureProgress = new()
+            {
+                StudentId = userId,
+                LectureId = lectureId,
+                CompletedAt = DateTime.UtcNow
+            };
+            context.StudentLectureProgresses.Add(studentLectureProgress);
+
+            await context.SaveChangesAsync();
+
+            var totalLectures = await context.Lectures
+                .CountAsync(l => l.CourseId == lecture.CourseId);
+
+            var completedLectures = await context.StudentLectureProgresses
+                .CountAsync(x =>x.StudentId == userId && x.Lecture.CourseId == lecture.CourseId);
+
+            studentCourse.Progress = totalLectures != 0 ? (int)(completedLectures * 100 / totalLectures) : 0;
+
+            await context.SaveChangesAsync();
+            return mapper.Map<StudentsCourseResponse>(studentCourse);
+
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineCourseManagement.Models.Entities;
+namespace OnlineCourseManagement.Models;
 
 public partial class Position
 {

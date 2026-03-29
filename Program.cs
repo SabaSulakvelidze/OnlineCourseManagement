@@ -1,5 +1,5 @@
-using FinalProject.Exceptions;
-using FinalProject.Mappers;
+using OnlineCourseManagement.Exceptions;
+using OnlineCourseManagement.Mappers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
@@ -65,6 +65,7 @@ builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<IEnrollmentServices, EnrollmentServices>();
 builder.Services.AddScoped<IChangePositionService, ChangePositionService>();
 builder.Services.AddScoped<IRatingService,RatingService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddDbContext<OnlineCourseManagementDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
