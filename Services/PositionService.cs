@@ -6,6 +6,7 @@ using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
+using OnlineCourseManagement.Exceptions;
 
 namespace OnlineCourseManagement.Services
 {
@@ -19,7 +20,7 @@ namespace OnlineCourseManagement.Services
                 throw new Exception(nameof(request));
 
             if (await context.Positions.AnyAsync(u => u.PositionName == request.PositionName))
-                throw new Exception($"User with username '{request.PositionName}' already exists");
+                throw new ConflictException($"User with username '{request.PositionName}' already exists");
 
             var position = mapper.Map<Position>(request);
 
@@ -32,7 +33,7 @@ namespace OnlineCourseManagement.Services
         public async Task DeleteUser(Guid id)
         {
             var position = await context.Positions.FindAsync(id)
-                ?? throw new Exception($"User with id {id} not found");
+                ?? throw new ElementNotFoundException($"User with id {id} not found");
 
             context.Positions.Remove(position);
 
@@ -50,7 +51,7 @@ namespace OnlineCourseManagement.Services
         {
             var position = await context.Positions
                 .FirstOrDefaultAsync(u => u.Id == id)
-                ?? throw new Exception($"Position with id {id} not found");
+                ?? throw new ElementNotFoundException($"Position with id {id} not found");
 
             return mapper.Map<PositionResponse>(position);
         }
