@@ -3,19 +3,17 @@ using OnlineCourseManagement.Models.Responses;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
-using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Requests;
-using OnlineCourseManagement.Models.Responses;
 using OnlineCourseManagement.Exceptions;
 
 namespace OnlineCourseManagement.Services
 {
     public class PositionService(OnlineCourseManagementDbContext context, IMapper mapper) : IPositionService
     {
-        
 
-        public async Task<PositionResponce> CreatePosition(AddPositionRequest request)
-        public async Task<PositionResponse> CreatePosition(ChangePosition request)
+
+
+        public async Task<PositionResponse> CreatePosition(AddPositionRequest request)
         {
             if (request == null)
                 throw new Exception(nameof(request));

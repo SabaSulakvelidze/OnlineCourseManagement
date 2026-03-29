@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlineCourseManagement.Models.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace OnlineCourseManagement.Models;

@@ -38,7 +38,6 @@ public partial class OnlineCourseManagementDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UsersPosition> UsersPositions { get; set; }
-    public virtual DbSet<UsersPosition> UsersPositions { get; set; }
 
     public virtual DbSet<UsersByPosition> UsersByPosition { get; set; }
 

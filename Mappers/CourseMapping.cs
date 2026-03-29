@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OnlineCourseManagement.Models;
+using OnlineCourseManagement.Models.Entities;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 

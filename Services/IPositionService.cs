@@ -7,8 +7,7 @@ namespace OnlineCourseManagement.Services
 {
     public interface IPositionService
     {
-        Task<PositionResponse> CreatePosition( ChangePosition request);
-        Task<PositionResponce> CreatePosition( AddPositionRequest request);
+        Task<PositionResponse> CreatePosition( AddPositionRequest request);
 
         Task<List<PositionResponse>> GetAllPositions();
 

@@ -6,14 +6,18 @@ using OnlineCourseManagement.Models.Requests;
 
 namespace OnlineCourseManagement.Services
 {
-    public class RatingService(OnlineCourseManagementDbContext context, IMapper mapper) : IRatingService
+    public class RatingService(
+        OnlineCourseManagementDbContext context,
+        IMapper mapper,
+        ICurrentUserService currentUserService
+        ) : IRatingService
     {
         public async Task RateCourse(RateCourseRequest request)
         {
-            
+            var currentUserId = currentUserService.UserId;
 
             var existing = await context.Ratings
-                .FirstOrDefaultAsync(r => r.UserId == request.UserId
+                .FirstOrDefaultAsync(r => r.UserId == currentUserId
                                       && r.CourseId == request.CourseId);
 
             if (existing != null)
