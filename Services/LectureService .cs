@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Azure.Core;
-using FinalProject.Exceptions;
+using OnlineCourseManagement.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Requests;

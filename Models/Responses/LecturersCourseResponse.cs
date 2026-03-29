@@ -1,4 +1,4 @@
-﻿using FinalProject.Models.Responses;
+﻿using OnlineCourseManagement.Models.Responses;
 
 namespace OnlineCourseManagement.Models.Responses
 {

@@ -1,9 +1,7 @@
-﻿using FinalProject.Models.Requests;
-using FinalProject.Models.Responses;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Requests;
+using OnlineCourseManagement.Models.Responses;
 using OnlineCourseManagement.Service;
 
 namespace OnlineCourseManagement.Controllers

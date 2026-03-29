@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FinalProject.Models.Requests
+namespace OnlineCourseManagement.Models.Requests
 {
     public class CreateUserRequest
     {
