@@ -73,7 +73,7 @@ namespace OnlineCourseManagement.Controllers
 
             if (!permision.Contains("Admin"))
             {
-                return Unauthorized("You have not permision to change");
+                return Forbid("You have not permision to change");
             }
 
             await positionService.ChangePosition(request);
