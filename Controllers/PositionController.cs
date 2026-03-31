@@ -17,8 +17,7 @@ namespace OnlineCourseManagement.Controllers
 
       
         [HttpPost]
-        
-
+        [Authorize]
         public async Task<ActionResult> AddPosition(AddPositionRequest request)
         {
             var positions = currentUserService.UserPositions;
@@ -30,6 +29,7 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<PositionResponse>> GetAllPositions()
         {
             var positions = currentUserService.UserPositions;
@@ -41,7 +41,8 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PositionResponse>> GetUserById(Guid id)
+        [Authorize]
+        public async Task<ActionResult<PositionResponse>> GetPositionById(Guid id)
         {
             var positions = currentUserService.UserPositions;
 
@@ -53,7 +54,8 @@ namespace OnlineCourseManagement.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<PositionResponse>> DeleteUser(Guid id)
+        [Authorize]
+        public async Task<ActionResult<PositionResponse>> DeletePosition(Guid id)
         {
             var positions = currentUserService.UserPositions;
 
@@ -65,20 +67,36 @@ namespace OnlineCourseManagement.Controllers
         }
 
 
-        [HttpPost("Change Position")]
-        
-        public async Task<ActionResult> ChangePosition(ChangePositionRequest request)
+        [HttpPost("AssignPossition")]
+        [Authorize]
+        public async Task<ActionResult> AssignPossition(UserPositionRequest request)
         {
-            var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
+            var positions = currentUserService.UserPositions;
 
-            if (!permision.Contains("Admin"))
+            if (!positions.Contains("Admin"))
             {
-                return Unauthorized("You have not permision to change");
+                return Forbid("You dont have permission for this action!");
             }
 
-            await positionService.ChangePosition(request);
+            await positionService.AssignPossition(request);
             return Ok("Position updated");
 
+        }
+
+
+        [HttpPost("RemovePosition")]
+        [Authorize]
+        public async Task<ActionResult> RemovePosition(UserPositionRequest request)
+        {
+            var positions = currentUserService.UserPositions;
+
+            if (!positions.Contains("Admin"))
+            {
+                return Forbid("You dont have permission for this action!");
+            }
+
+            await positionService.RemovePosition(request);
+            return Ok();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace OnlineCourseManagement.Services
         ICurrentUserService currentUserService
         ) : IEnrollmentServices
     {
-        public async Task<ActionResult<LecturersCourseResponse>> AssignLecturer(AssignLecturerRequest request)
+        public async Task<ActionResult<LecturersCourseResponse>> AssignLecturer(LecturerCourseRequest request)
         {
             if (!await context.Courses.AnyAsync(c => c.Id == request.CourseId))
                 throw new ElementNotFoundException($"Course with id {request.CourseId} was not found.");
@@ -46,7 +46,7 @@ namespace OnlineCourseManagement.Services
             return mapper.Map<LecturersCourseResponse>(entity);
         }
 
-        public async Task<ActionResult<StudentsCourseResponse>> EnrollStudent(EnrollStudentRequest request)
+        public async Task<ActionResult<StudentsCourseResponse>> EnrollStudent(StudentCourseRequest request)
         {
             var courseExists = await context.Courses
                  .AnyAsync(c => c.Id == request.CourseId);
@@ -80,6 +80,39 @@ namespace OnlineCourseManagement.Services
 
             return mapper.Map<StudentsCourseResponse>(entity);
         }
+
+        public async Task<ActionResult<StudentsCourseResponse>> UnenrollStudent(StudentCourseRequest request)
+        {
+            if (!await context.Courses.AnyAsync(c => c.Id == request.CourseId))
+                throw new ElementNotFoundException($"Course with id {request.CourseId} was not found.");
+
+            var studentCourse = await context.StudentsCourses
+                .FirstOrDefaultAsync(sc => sc.CourseId == request.CourseId && sc.StudentId == request.StudentId)
+                ?? throw new ElementNotFoundException(
+                    $"Student with id {request.StudentId} is not enrolled in course with id {request.CourseId}.");
+
+            context.StudentsCourses.Remove(studentCourse);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<StudentsCourseResponse>(studentCourse);
+        }
+
+        public async Task<ActionResult<LecturersCourseResponse>> UnassignLecturer(LecturerCourseRequest request)
+        {
+            if (!await context.Courses.AnyAsync(c => c.Id == request.CourseId))
+                throw new ElementNotFoundException($"Course with id {request.CourseId} was not found.");
+
+            var lecturerCourse = await context.LecturersCourses
+                .FirstOrDefaultAsync(lc => lc.CourseId == request.CourseId && lc.LecturerId == request.LecturerId)
+                ?? throw new ElementNotFoundException(
+                    $"Lecturer with id {request.LecturerId} is not assigned to course with id {request.CourseId}.");
+
+            context.LecturersCourses.Remove(lecturerCourse);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<LecturersCourseResponse>(lecturerCourse);
+        }
+
 
         public async Task<ActionResult<StudentsCourseResponse>> TransferCourse(GiftCourseRequest request)
         {

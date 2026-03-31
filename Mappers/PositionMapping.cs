@@ -12,7 +12,7 @@ namespace OnlineCourseManagement.Mappers
             CreateMap<AddPositionRequest, Position>();
             CreateMap<UpdatePositionRequest, Position>();
             CreateMap<Position, PositionResponse>();
-            CreateMap<ChangePositionRequest, UsersPosition>();
+            CreateMap<UserPositionRequest, UsersPosition>();
         }
     }
 }

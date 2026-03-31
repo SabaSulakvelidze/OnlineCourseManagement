@@ -9,10 +9,10 @@ namespace OnlineCourseManagement.Mappers
     {
         public EnrollmentMapping()
         {
-            CreateMap<AssignLecturerRequest,LecturersCourse>();
+            CreateMap<LecturerCourseRequest,LecturersCourse>();
             CreateMap<LecturersCourse,LecturersCourseResponse>();
 
-            CreateMap<EnrollStudentRequest,StudentsCourse>();
+            CreateMap<StudentCourseRequest,StudentsCourse>();
             CreateMap<StudentsCourse,StudentsCourseResponse>();
 
         }

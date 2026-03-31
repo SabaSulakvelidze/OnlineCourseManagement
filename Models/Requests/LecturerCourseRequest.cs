@@ -1,6 +1,6 @@
 ﻿namespace OnlineCourseManagement.Models.Requests
 {
-    public class AssignLecturerRequest
+    public class LecturerCourseRequest
     {
         public int LecturerId { get; set; }
 
