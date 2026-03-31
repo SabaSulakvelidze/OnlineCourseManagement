@@ -13,7 +13,8 @@ namespace OnlineCourseManagement.Controllers
     [ApiController]
     public class CoursesController(
         ICourseService service,
-        ICurrentUserService currentUserService) : ControllerBase
+        ICurrentUserService currentUserService,
+        IRatingService ratingService) : ControllerBase
     {
         [HttpPost]
         [Authorize]

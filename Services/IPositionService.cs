@@ -1,7 +1,5 @@
 ﻿using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
-using OnlineCourseManagement.Models.Requests;
-using OnlineCourseManagement.Models.Responses;
 
 namespace OnlineCourseManagement.Services
 {
@@ -13,7 +11,7 @@ namespace OnlineCourseManagement.Services
 
         Task<PositionResponse> GetPositionById(Guid id);
 
-
+        Task ChangePosition(ChangePositionRequest request);
         Task DeleteUser(Guid id);
 
        

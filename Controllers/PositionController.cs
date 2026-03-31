@@ -76,7 +76,7 @@ namespace OnlineCourseManagement.Controllers
                 return Unauthorized("You have not permision to change");
             }
 
-            await changePositionService.ChangePosition(request);
+            await positionService.ChangePosition(request);
             return Ok("Position updated");
 
         }

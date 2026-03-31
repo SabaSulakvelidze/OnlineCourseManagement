@@ -10,16 +10,30 @@ namespace OnlineCourseManagement.Services
 {
     public class PositionService(OnlineCourseManagementDbContext context, IMapper mapper) : IPositionService
     {
+        public async Task ChangePosition(ChangePositionRequest request)
+        {
+            var user = await context.Users
+                .Include(u => u.UsersPositions)
+                    .ThenInclude(up=> up.Position)
+               .FirstOrDefaultAsync(u => u.Id == request.UsersId)
+               ?? throw new ElementNotFoundException($"User with id {request.UsersId} not found");
 
+            context.UsersPositions.RemoveRange(user.UsersPositions);
 
+            var newUserPosition = new UsersPosition
+            {
+                UsersId = request.UsersId,
+                PositionId = request.PositionId
+            };
+
+            await context.UsersPositions.AddAsync(newUserPosition);
+            await context.SaveChangesAsync();
+        }
 
         public async Task<PositionResponse> CreatePosition(AddPositionRequest request)
         {
-            if (request == null)
-                throw new Exception(nameof(request));
-
             if (await context.Positions.AnyAsync(u => u.PositionName == request.PositionName))
-                throw new ConflictException($"User with username '{request.PositionName}' already exists");
+                throw new ConflictException($"Position with PositionName '{request.PositionName}' already exists");
 
             var position = mapper.Map<Position>(request);
 
@@ -32,7 +46,7 @@ namespace OnlineCourseManagement.Services
         public async Task DeleteUser(Guid id)
         {
             var position = await context.Positions.FindAsync(id)
-                ?? throw new ElementNotFoundException($"User with id {id} not found");
+                ?? throw new ElementNotFoundException($"Position with id {id} not found");
 
             context.Positions.Remove(position);
 
