@@ -10,5 +10,10 @@ namespace OnlineCourseManagement.Models.Requests
 
         [StringLength(2000)]
         public string? Description { get; set; }
+
+        [Required]
+        public decimal Price { get; set; }
+        [Required]
+        public string PriceCurrency { get; set; } = null!;
     }
 }

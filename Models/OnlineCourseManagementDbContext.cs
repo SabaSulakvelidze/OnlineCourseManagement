@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using OnlineCourseManagement.Models.Entities;
 using OnlineCourseManagement.Models.Procedures;
 
 namespace OnlineCourseManagement.Models;
@@ -30,6 +31,8 @@ public partial class OnlineCourseManagementDbContext : DbContext
 
     public virtual DbSet<StudentLectureProgress> StudentLectureProgresses { get; set; }
 
+    public virtual DbSet<Rating> Ratings { get; set; }
+
     public virtual DbSet<StudentsCourse> StudentsCourses { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -44,7 +47,7 @@ public partial class OnlineCourseManagementDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=OnlineCourseManagementDB;Trusted_Connection=True;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=OnlineCourseManagementDB;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -150,6 +153,28 @@ public partial class OnlineCourseManagementDbContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Purchases__UserI__17036CC0");
+        });
+
+        modelBuilder.Entity<Rating>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Ratings__3214EC0700A60F7F");
+
+            entity.HasIndex(e => new { e.UserId, e.CourseId }, "UQ_User_Course").IsUnique();
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Review).HasMaxLength(1000);
+
+            entity.HasOne(d => d.Course).WithMany(p => p.Ratings)
+                .HasForeignKey(d => d.CourseId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Ratings_Courses");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Ratings)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Ratings_Users");
         });
 
         modelBuilder.Entity<StudentLectureProgress>(entity =>

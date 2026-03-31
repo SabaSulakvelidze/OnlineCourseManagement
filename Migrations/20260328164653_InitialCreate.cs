@@ -50,7 +50,7 @@ namespace OnlineCourseManagement.Migrations
                     ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     ProfileImageFileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     ProfileImageContentType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    UserPassword = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    UserPassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     PhoneNumber = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false)
                 },

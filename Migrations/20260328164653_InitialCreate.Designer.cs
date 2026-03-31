@@ -12,7 +12,7 @@ using OnlineCourseManagement.Models;
 namespace OnlineCourseManagement.Migrations
 {
     [DbContext(typeof(OnlineCourseManagementDbContext))]
-    [Migration("20260325195156_InitialCreate")]
+    [Migration("20260328164653_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace OnlineCourseManagement.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.Course", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.Course", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,7 +60,7 @@ namespace OnlineCourseManagement.Migrations
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.Lecture", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.Lecture", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -91,7 +91,7 @@ namespace OnlineCourseManagement.Migrations
                     b.ToTable("Lectures");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.LectureVideo", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.LectureVideo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -128,7 +128,7 @@ namespace OnlineCourseManagement.Migrations
                     b.ToTable("LectureVideos");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.LecturersCourse", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.LecturersCourse", b =>
                 {
                     b.Property<int>("LecturerId")
                         .HasColumnType("int");
@@ -149,7 +149,7 @@ namespace OnlineCourseManagement.Migrations
                     b.ToTable("LecturersCourses");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.Position", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.Position", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -168,7 +168,7 @@ namespace OnlineCourseManagement.Migrations
                     b.ToTable("Position", (string)null);
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourses", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.Purchase", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -202,14 +202,14 @@ namespace OnlineCourseManagement.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Purchase__3214EC07CA029FCE");
 
-                    b.HasIndex("CourseId");
+                    b.HasIndex(new[] { "CourseId" }, "IX_Purchases_CourseId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_Purchases_UserId");
 
                     b.ToTable("Purchases");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.StudentsCourse", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.StudentsCourse", b =>
                 {
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
@@ -244,7 +244,7 @@ namespace OnlineCourseManagement.Migrations
                     b.ToTable("StudentsCourses");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.User", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -277,9 +277,7 @@ namespace OnlineCourseManagement.Migrations
 
                     b.Property<string>("UserPassword")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -295,7 +293,7 @@ namespace OnlineCourseManagement.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.UsersPosition", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.UsersPosition", b =>
                 {
                     b.Property<int>("UsersId")
                         .HasColumnType("int");
@@ -316,9 +314,50 @@ namespace OnlineCourseManagement.Migrations
                     b.ToTable("UsersPosition", (string)null);
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.Lecture", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Procedures.UsersByPosition", b =>
                 {
-                    b.HasOne("OnlineCourseManagement.Models.Course", "Course")
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable((string)null);
+
+                    b.ToView(null, (string)null);
+                });
+
+            modelBuilder.Entity("OnlineCourseManagement.Models.Procedures.UsersCourses", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LecturerOf")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StudentOf")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable((string)null);
+
+                    b.ToView(null, (string)null);
+                });
+
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.Lecture", b =>
+                {
+                    b.HasOne("OnlineCourseManagement.Models.Entities.Course", "Course")
                         .WithMany("Lectures")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -328,9 +367,9 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.LectureVideo", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.LectureVideo", b =>
                 {
-                    b.HasOne("OnlineCourseManagement.Models.Lecture", "Lecture")
+                    b.HasOne("OnlineCourseManagement.Models.Entities.Lecture", "Lecture")
                         .WithMany("LectureVideos")
                         .HasForeignKey("LectureId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -340,15 +379,15 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("Lecture");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.LecturersCourse", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.LecturersCourse", b =>
                 {
-                    b.HasOne("OnlineCourseManagement.Models.Course", "Course")
+                    b.HasOne("OnlineCourseManagement.Models.Entities.Course", "Course")
                         .WithMany("LecturersCourses")
                         .HasForeignKey("CourseId")
                         .IsRequired()
                         .HasConstraintName("FK__Lecturers__Cours__0A9D95DB");
 
-                    b.HasOne("OnlineCourseManagement.Models.User", "Lecturer")
+                    b.HasOne("OnlineCourseManagement.Models.Entities.User", "Lecturer")
                         .WithMany("LecturersCourses")
                         .HasForeignKey("LecturerId")
                         .IsRequired()
@@ -359,15 +398,15 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("Lecturer");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.PurchaseCourses", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.Purchase", b =>
                 {
-                    b.HasOne("OnlineCourseManagement.Models.Course", "Course")
+                    b.HasOne("OnlineCourseManagement.Models.Entities.Course", "Course")
                         .WithMany("Purchases")
                         .HasForeignKey("CourseId")
                         .IsRequired()
                         .HasConstraintName("FK__Purchases__Cours__17F790F9");
 
-                    b.HasOne("OnlineCourseManagement.Models.User", "User")
+                    b.HasOne("OnlineCourseManagement.Models.Entities.User", "User")
                         .WithMany("Purchases")
                         .HasForeignKey("UserId")
                         .IsRequired()
@@ -378,15 +417,15 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.StudentsCourse", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.StudentsCourse", b =>
                 {
-                    b.HasOne("OnlineCourseManagement.Models.Course", "Course")
+                    b.HasOne("OnlineCourseManagement.Models.Entities.Course", "Course")
                         .WithMany("StudentsCourses")
                         .HasForeignKey("CourseId")
                         .IsRequired()
                         .HasConstraintName("FK__StudentsC__Cours__06CD04F7");
 
-                    b.HasOne("OnlineCourseManagement.Models.User", "Student")
+                    b.HasOne("OnlineCourseManagement.Models.Entities.User", "Student")
                         .WithMany("StudentsCourses")
                         .HasForeignKey("StudentId")
                         .IsRequired()
@@ -397,15 +436,15 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.UsersPosition", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.UsersPosition", b =>
                 {
-                    b.HasOne("OnlineCourseManagement.Models.Position", "Position")
+                    b.HasOne("OnlineCourseManagement.Models.Entities.Position", "Position")
                         .WithMany("UsersPositions")
                         .HasForeignKey("PositionId")
                         .IsRequired()
                         .HasConstraintName("FK__UsersPosi__Posit__797309D9");
 
-                    b.HasOne("OnlineCourseManagement.Models.User", "Users")
+                    b.HasOne("OnlineCourseManagement.Models.Entities.User", "Users")
                         .WithMany("UsersPositions")
                         .HasForeignKey("UsersId")
                         .IsRequired()
@@ -416,7 +455,7 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.Course", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.Course", b =>
                 {
                     b.Navigation("LecturersCourses");
 
@@ -427,17 +466,17 @@ namespace OnlineCourseManagement.Migrations
                     b.Navigation("StudentsCourses");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.Lecture", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.Lecture", b =>
                 {
                     b.Navigation("LectureVideos");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.Position", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.Position", b =>
                 {
                     b.Navigation("UsersPositions");
                 });
 
-            modelBuilder.Entity("OnlineCourseManagement.Models.User", b =>
+            modelBuilder.Entity("OnlineCourseManagement.Models.Entities.User", b =>
                 {
                     b.Navigation("LecturersCourses");
 

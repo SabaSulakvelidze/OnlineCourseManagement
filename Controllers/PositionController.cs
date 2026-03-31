@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 using OnlineCourseManagement.Services;
@@ -15,8 +17,9 @@ namespace OnlineCourseManagement.Controllers
 
       
         [HttpPost]
+        
 
-        public async Task<ActionResult> AddPosition(ChangePosition request)
+        public async Task<ActionResult> AddPosition(AddPositionRequest request)
         {
             var positions = currentUserService.UserPositions;
 
@@ -62,36 +65,20 @@ namespace OnlineCourseManagement.Controllers
         }
 
 
-        //[HttpPost("Change Position")]
-        //public async Task<ActionResult> ChangePosition(ChangePosition request)
-        //{
+        [HttpPost("Change Position")]
+        
+        public async Task<ActionResult> ChangePosition(ChangePositionRequest request)
+        {
+            var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
 
+            if (!permision.Contains("Admin"))
+            {
+                return Unauthorized("You have not permision to change");
+            }
 
+            await changePositionService.ChangePosition(request);
+            return Ok("Position updated");
 
-
-        //    var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
-
-
-
-        //    if (!permision.Contains("Admin"))
-        //    {
-        //        return Unauthorized("You have not permision to change");
-        //    }
-
-        //    return Ok("done!!!!");
-        //    //Position position = new Position();
-        //    //position.PositionName = request.PositionName;
-
-        //    //context.Positions.Add(position);
-
-        //    //await context.SaveChangesAsync();
-
-        //    //return Ok(position);
-
-
-
-
-
-        //}
+        }
     }
 }

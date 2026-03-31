@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OnlineCourseManagement.Models;
+using OnlineCourseManagement.Models.Entities;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 
@@ -12,6 +13,7 @@ namespace OnlineCourseManagement.Mappers
             CreateMap<CreateCourseRequest, Course>();
             CreateMap<UpdateCourseRequest, Course>();
             CreateMap<Course, CourseResponse>();
+            CreateMap<RateCourseRequest, Rating>();
         }
     }
 }
