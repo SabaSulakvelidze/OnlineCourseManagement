@@ -7,7 +7,10 @@ namespace OnlineCourseManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PositionController(IPositionService positionService) : ControllerBase
+    public class PositionController(
+        IPositionService positionService,
+        ICurrentUserService currentUserService
+        ) : ControllerBase
     {
 
       
@@ -15,16 +18,10 @@ namespace OnlineCourseManagement.Controllers
 
         public async Task<ActionResult> AddPosition(ChangePosition request)
         {
-            var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
+            var positions = currentUserService.UserPositions;
 
-            if (!permision.Contains("Admin"))
-            {
-                return Unauthorized("You have not permision to change");
-            }
-
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            if (request == null)
-                return BadRequest(request);
+            if (!positions.Contains("Admin"))
+                return Forbid();
 
             return Ok(await positionService.CreatePosition(request));
         }
@@ -32,12 +29,10 @@ namespace OnlineCourseManagement.Controllers
         [HttpGet]
         public async Task<ActionResult<PositionResponse>> GetAllPositions()
         {
-            var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
+            var positions = currentUserService.UserPositions;
 
-            if (!permision.Contains("Admin"))
-            {
-                return Unauthorized("You have not permision to change");
-            }
+            if (!positions.Contains("Admin"))
+                return Forbid();
 
             return Ok(await positionService.GetAllPositions());
         }
@@ -45,12 +40,10 @@ namespace OnlineCourseManagement.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PositionResponse>> GetUserById(Guid id)
         {
-            var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
+            var positions = currentUserService.UserPositions;
 
-            if (!permision.Contains("Admin"))
-            {
-                return Unauthorized("You have not permision to change");
-            }
+            if (!positions.Contains("Admin"))
+                return Forbid();
 
             return Ok(await positionService.GetPositionById(id));
         }
@@ -59,14 +52,12 @@ namespace OnlineCourseManagement.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<PositionResponse>> DeleteUser(Guid id)
         {
-            var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
+            var positions = currentUserService.UserPositions;
 
-            if (!permision.Contains("Admin"))
-                    {
-                        return Unauthorized("You have not permision to change");
-                    }
+            if (!positions.Contains("Admin"))
+                return Forbid();
 
-                await positionService.DeleteUser(id);
+            await positionService.DeleteUser(id);
             return Ok();
         }
 

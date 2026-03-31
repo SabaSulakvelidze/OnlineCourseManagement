@@ -12,9 +12,12 @@ namespace OnlineCourseManagement.Services
                 ?? throw new UnauthorizedAccessException("UserId claim missing")
             );
 
-        public string UserPosition =>
+        public List<string> UserPositions =>
              httpContextAccessor.HttpContext?.User
-                    .FindFirstValue("Position")
+                .Claims
+                .Where(item => item.Type == "Position")
+                .Select(item => item.Value)
+                .ToList()
                 ?? throw new UnauthorizedAccessException("Position claim missing");
     }
 }

@@ -27,13 +27,8 @@ namespace OnlineCourseManagement.Controllers
         
 
         [HttpPost("api/Login")]
-
         public async Task<ActionResult> Login(AuthUser auth)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             var result = await context.Users
                 .Include(u => u.UsersPositions)

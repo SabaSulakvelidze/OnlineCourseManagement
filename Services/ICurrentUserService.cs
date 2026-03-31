@@ -3,7 +3,7 @@
     public interface ICurrentUserService
     {
         int UserId { get; }
-        string UserPosition { get; }
+        List<string> UserPositions { get; }
 
     }
 }
