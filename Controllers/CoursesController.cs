@@ -93,7 +93,7 @@ namespace OnlineCourseManagement.Controllers
 
             if (!permision.Contains("Student"))
             {
-                return Forbid("You have not permision to change");
+                return Forbid("You dont have permission for this action!");
             }
 
             await ratingService.RateCourse(request);

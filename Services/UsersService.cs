@@ -1,23 +1,25 @@
 ﻿
 using AutoMapper;
-using BCrypt.Net;
-using OnlineCourseManagement.Models.Requests;
-using OnlineCourseManagement.Models.Responses;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
-using OnlineCourseManagement.Models;
+using Microsoft.IdentityModel.Tokens;
+using OnlineCourseManagement.Exceptions;
 using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Procedures;
+using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 using System.Data;
-using OnlineCourseManagement.Exceptions;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
-namespace OnlineCourseManagement.Service
+namespace OnlineCourseManagement.Services
 {
     public class UsersService(
         OnlineCourseManagementDbContext context,
-        IMapper mapper) : IUsersService
+        IMapper mapper,
+        IConfiguration configuration,
+        ICurrentUserService currentUserService) : IUsersService
     {
 
         private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
@@ -153,6 +155,47 @@ namespace OnlineCourseManagement.Service
             var result = await context.Set<UsersByPosition>().FromSqlRaw("EXEC GetUsersByPosition @PositionName", sqlParams).ToListAsync();
 
             return result;
+        }
+
+        public async Task<string> Login(AuthUser auth)
+        {
+            var result = await context.Users
+                .Include(u => u.UsersPositions)
+                .ThenInclude(p => p.Position)
+                .FirstOrDefaultAsync(
+                item => item.Email == auth.Email)
+                ?? throw new UnauthorizedAccessException("Email or Password is incorrect!");
+
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(auth.UserPassword, result.UserPassword);
+
+            if (!isPasswordValid)
+                throw new UnauthorizedAccessException("Email or Password is incorrect!");
+            
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name,result.Email),
+                new Claim("UserId",result.Id.ToString())
+
+            };
+
+            var colection = result.UsersPositions.Select(item => item.Position.PositionName);
+            foreach (var item in colection)
+            {
+                claims.Add(new Claim("Position", item));
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: configuration["JwtSettings:Issuer"],
+                audience: configuration["JwtSettings:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(2),
+                signingCredentials: creds
+                );
+            return new JwtSecurityTokenHandler().WriteToken(token);
+
         }
     }
 }

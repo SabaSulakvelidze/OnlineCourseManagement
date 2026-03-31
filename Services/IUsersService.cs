@@ -1,10 +1,9 @@
-﻿using OnlineCourseManagement.Models.Requests;
-using OnlineCourseManagement.Models.Responses;
-using Microsoft.AspNetCore.Identity.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using OnlineCourseManagement.Models.Procedures;
+using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 
-namespace OnlineCourseManagement.Service
+namespace OnlineCourseManagement.Services
 {
     public interface IUsersService
     {
@@ -23,6 +22,8 @@ namespace OnlineCourseManagement.Service
         Task<UserProfileImageResponse?> GetProfilePictureAsync(int userId);
 
         Task<List<UsersByPosition>> GetUsersByPosition(string positionName);
-      
+
+        Task<string> Login(AuthUser auth);
+
     }
 }

@@ -5,28 +5,56 @@ using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace OnlineCourseManagement.Services
 {
-    public class PositionService(OnlineCourseManagementDbContext context, IMapper mapper) : IPositionService
+    public class PositionService(
+        OnlineCourseManagementDbContext context,
+        IMapper mapper) : IPositionService
     {
-        public async Task ChangePosition(ChangePositionRequest request)
+        public async Task AssignPossition(UserPositionRequest request)
         {
-            var user = await context.Users
-                .Include(u => u.UsersPositions)
-                    .ThenInclude(up=> up.Position)
-               .FirstOrDefaultAsync(u => u.Id == request.UsersId)
-               ?? throw new ElementNotFoundException($"User with id {request.UsersId} not found");
+            var userExists = await context.Users.AnyAsync(u => u.Id == request.UserId);
+            if (!userExists)
+                throw new ElementNotFoundException($"User with id {request.UserId} was not found.");
 
-            context.UsersPositions.RemoveRange(user.UsersPositions);
+            var positionExists = await context.Positions.AnyAsync(p => p.Id == request.PositionId);
+            if (!positionExists)
+                throw new ElementNotFoundException($"Position with id {request.PositionId} was not found.");
 
-            var newUserPosition = new UsersPosition
+            var alreadyAssigned = await context.UsersPositions
+                .AnyAsync(up => up.UsersId == request.UserId && up.PositionId == request.PositionId);
+
+            if (alreadyAssigned)
+                throw new ConflictException("This position is already assigned to the user.");
+
+            context.UsersPositions.Add(new UsersPosition
             {
-                UsersId = request.UsersId,
+                Id = Guid.NewGuid(),
+                UsersId = request.UserId,
                 PositionId = request.PositionId
-            };
+            });
 
-            await context.UsersPositions.AddAsync(newUserPosition);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RemovePosition(UserPositionRequest request)
+        {
+            var userExists = await context.Users.AnyAsync(u => u.Id == request.UserId);
+            if (!userExists)
+                throw new ElementNotFoundException($"User with id {request.UserId} was not found.");
+
+            var positionExists = await context.Positions.AnyAsync(p => p.Id == request.PositionId);
+            if (!positionExists)
+                throw new ElementNotFoundException($"Position with id {request.PositionId} was not found.");
+
+            var userPosition = await context.UsersPositions
+                .FirstOrDefaultAsync(up=> up.UsersId == request.UserId && up.PositionId == request.PositionId)
+                ?? throw new ElementNotFoundException($"User with id {request.UserId} is not assigned to position with id {request.PositionId}");
+
+            context.UsersPositions.Remove(userPosition);
+
             await context.SaveChangesAsync();
         }
 

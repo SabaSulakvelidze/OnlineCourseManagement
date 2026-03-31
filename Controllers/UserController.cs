@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
-using OnlineCourseManagement.Service;
 using OnlineCourseManagement.Services;
 
 namespace OnlineCourseManagement.Controllers
@@ -11,35 +10,29 @@ namespace OnlineCourseManagement.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class UserController(
-        IUsersService userService,
+        IUsersService usersService,
         ICurrentUserService currentUserService) : ControllerBase
     {
-    
-        [HttpPost("/api/Register")]
-        public async Task<ActionResult<UserResponse>> Register(CreateUserRequest request)
-        {
-            return Ok(await userService.CreateUser(request));
-        }
 
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<UserResponse>> GetUserById(int id)
         {
-            return Ok(await userService.GetUserById(id));
+            return Ok(await usersService.GetUserById(id));
         }
 
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<UserResponse>> GetAllUsers()
         {
-            return Ok(await userService.GetAllUsers());
+            return Ok(await usersService.GetAllUsers());
         }
 
         [HttpPut("{id}")]
         [Authorize]
         public async Task<ActionResult<UserResponse>> UpdateUser(int id,UpdateUserRequest request)
         {
-            return Ok(await userService.UpdateUser(id, request));
+            return Ok(await usersService.UpdateUser(id, request));
         }
 
         
@@ -52,7 +45,7 @@ namespace OnlineCourseManagement.Controllers
 
             if (!positions.Contains("Admin"))
                 return Forbid();
-            await userService.DeleteUser(id);
+            await usersService.DeleteUser(id);
             return Ok();
         }
 
@@ -60,7 +53,7 @@ namespace OnlineCourseManagement.Controllers
         [Authorize]
         public async Task<IActionResult> UploadProfilePicture(int userId, IFormFile file)
         {
-            await userService.UploadProfilePictureAsync(userId, file);
+            await usersService.UploadProfilePictureAsync(userId, file);
             return Ok("Profile picture uploaded successfully");
         }
 
@@ -68,7 +61,7 @@ namespace OnlineCourseManagement.Controllers
         [Authorize]
         public async Task<ActionResult> GetProfilePicture(int userId)
         {
-            var result = await userService.GetProfilePictureAsync(userId);
+            var result = await usersService.GetProfilePictureAsync(userId);
 
             if (result == null)
                 return NotFound("Profile picture not found");
@@ -84,7 +77,7 @@ namespace OnlineCourseManagement.Controllers
 
             if (!positions.Contains("Admin"))
                 return Forbid();
-            return Ok(await userService.GetUsersByPosition(userPosition));
+            return Ok(await usersService.GetUsersByPosition(userPosition));
         }
        
     }

@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.CloudeStorage;
-using OnlineCourseManagement.Service;
 using OnlineCourseManagement.Services;
 using System.Text;
 
@@ -131,6 +130,7 @@ app.UseExceptionHandler(builder =>
             ElementNotFoundException => StatusCodes.Status404NotFound,
             ConflictException => StatusCodes.Status409Conflict,
             ArgumentException => StatusCodes.Status400BadRequest,
+            UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
             _ => StatusCodes.Status500InternalServerError
         };
 

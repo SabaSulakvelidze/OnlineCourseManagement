@@ -2,7 +2,7 @@
 
 namespace OnlineCourseManagement.Models.Requests
 {
-    public class EnrollStudentRequest
+    public class StudentCourseRequest
     {
         [Required]
         public int StudentId { get; set; }
