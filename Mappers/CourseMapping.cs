@@ -13,6 +13,7 @@ namespace OnlineCourseManagement.Mappers
             CreateMap<UpdateCourseRequest, Course>();
             CreateMap<Course, CourseResponse>();
             CreateMap<RateCourseRequest, Rating>();
+            CreateMap<Rating, RatingResponse>();
         }
     }
 }

@@ -13,8 +13,7 @@ namespace OnlineCourseManagement.Controllers
     [ApiController]
     public class CoursesController(
         ICourseService service,
-        ICurrentUserService currentUserService,
-        IRatingService ratingService) : ControllerBase
+        ICurrentUserService currentUserService) : ControllerBase
     {
         [HttpPost]
         [Authorize]
@@ -86,25 +85,26 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpPost("Review")]
-
+        [Authorize]
         public async Task<ActionResult> CourseReview(RateCourseRequest request)
         {
-            var permision = User.Claims.Where(item => item.Type == "Position").Select(item => item.Value).ToList();
+            var positions = currentUserService.UserPositions;
 
-            if (!permision.Contains("Student"))
+            if (!positions.Contains("Student"))
             {
                 return Forbid("You dont have permission for this action!");
             }
 
-            await ratingService.RateCourse(request);
+            await service.RateCourse(request);
             return Ok("Rated successfully");
         }
 
-        [HttpGet("average/{courseId}")]
-        public async Task<IActionResult> GetAverage(int courseId)
+        [HttpGet("GetReviews/{courseId}")]
+        [Authorize]
+        public async Task<ActionResult<List<RatingResponse>>> GetReviews(int courseId)
         {
-            var avg = await ratingService.GetAverage(courseId);
-            return Ok(avg);
+            var result = await service.GetReviews(courseId);
+            return Ok(result);
         }
 
 

@@ -1,4 +1,5 @@
-﻿using OnlineCourseManagement.Models.Procedures;
+﻿using Microsoft.AspNetCore.Mvc;
+using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
 
@@ -13,5 +14,7 @@ namespace OnlineCourseManagement.Services
         Task DeleteCourse(int id);
         Task<List<UsersCourses>> GetUsersCourses(int userId);
         Task<PurchaseCourseResponse> BuyCourseAsync(PurchaseCourseRequest request);
+        Task RateCourse(RateCourseRequest request);
+        Task<List<RatingResponse>> GetReviews(int courseId);
     }
 }
