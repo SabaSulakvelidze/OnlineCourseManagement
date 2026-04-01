@@ -91,9 +91,7 @@ namespace OnlineCourseManagement.Controllers
             var positions = currentUserService.UserPositions;
 
             if (!positions.Contains("Student"))
-            {
-                return Forbid("You dont have permission for this action!");
-            }
+                return Forbid();
 
             await service.RateCourse(request);
             return Ok("Rated successfully");
