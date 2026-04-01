@@ -17,13 +17,15 @@ namespace OnlineCourseManagement.Services
 
         Task DeleteUser(int id);
 
-        Task UploadProfilePictureAsync(int userId, IFormFile file);
+        Task UploadProfilePictureAsync(IFormFile file);
 
         Task<UserProfileImageResponse?> GetProfilePictureAsync(int userId);
 
         Task<List<UsersByPosition>> GetUsersByPosition(string positionName);
 
         Task<string> Login(AuthUser auth);
+
+        Task<CurrentUserResponse> GetCurrentUser();
 
     }
 }

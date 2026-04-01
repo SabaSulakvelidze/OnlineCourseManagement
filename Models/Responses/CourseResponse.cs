@@ -6,6 +6,8 @@
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; }
-        public List<LectureResponse> Lectures { get; set; } = [];
+        public decimal Price { get; set; }
+        public string PriceCurrency { get; set; } = null!;
+        public decimal? Rating { get; set; }
     }
 }

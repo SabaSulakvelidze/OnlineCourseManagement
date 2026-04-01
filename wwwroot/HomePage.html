@@ -1,127 +1,720 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Users Home Page</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Current User</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-            background-color: #f7f7f7;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
+        .container {
+            max-width: 1200px;
+            margin: 32px auto;
+            padding: 0 16px 40px;
         }
 
-        #usersContainer {
+        h1, h2, h3, h4 {
+            margin-top: 0;
+        }
+
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
         }
 
-        .user-card {
-            background: white;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            text-align: center;
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
         }
 
-            .user-card img {
-                width: 120px;
-                height: 120px;
-                object-fit: cover;
-                border-radius: 50%;
-                border: 2px solid #ddd;
-                margin-bottom: 12px;
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            font-size: 14px;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .btn-success {
+            background: #059669;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .muted {
+            color: #6b7280;
+        }
+
+        .token-box {
+            background: #111827;
+            color: #f9fafb;
+            border-radius: 10px;
+            padding: 12px;
+            overflow-x: auto;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .status {
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            display: none;
+            font-weight: 600;
+        }
+
+            .status.success {
+                display: block;
+                background: #dcfce7;
+                color: #166534;
             }
 
-        .user-name {
-            font-size: 18px;
-            font-weight: bold;
+            .status.error {
+                display: block;
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+            .status.info {
+                display: block;
+                background: #dbeafe;
+                color: #1d4ed8;
+            }
+
+        .hidden {
+            display: none;
         }
 
-        .user-id {
-            color: #666;
-            font-size: 14px;
-            margin-top: 6px;
+        .profile-wrap {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            flex-wrap: wrap;
         }
 
-        .message {
-            text-align: center;
-            color: #666;
+        .profile-image {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 14px;
+            border: 1px solid #d1d5db;
+            background: #e5e7eb;
+            display: block;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .info-table td {
+                padding: 12px 10px;
+                border-bottom: 1px solid #e5e7eb;
+                vertical-align: top;
+            }
+
+                .info-table td:first-child {
+                    width: 220px;
+                    font-weight: 700;
+                }
+
+        .badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e0ecff;
+            color: #1d4ed8;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .section-title {
+            margin-top: 8px;
+            margin-bottom: 14px;
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .sub-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 16px;
+            background: #fafafa;
+        }
+
+            .sub-card h4 {
+                margin-bottom: 10px;
+            }
+
+        .line {
+            margin-bottom: 8px;
+            line-height: 1.45;
+        }
+
+            .line strong {
+                display: inline-block;
+                min-width: 120px;
+            }
+
+        .course-title {
             font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .empty-box {
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 16px;
+            color: #6b7280;
+            background: #f8fafc;
+        }
+
+        .progress-wrap {
+            margin-top: 10px;
+        }
+
+        .progress-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 16px;
+            background: #e5e7eb;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #059669);
+            border-radius: 999px;
+            transition: width 0.3s ease;
+        }
+
+        .top-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .summary-box {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+            .summary-box .label {
+                font-size: 13px;
+                color: #6b7280;
+                margin-bottom: 6px;
+            }
+
+            .summary-box .value {
+                font-size: 22px;
+                font-weight: 700;
+            }
+
+        .small {
+            font-size: 13px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
-    <h1>Users</h1>
+    <div class="container">
+        <h1>Login and Current User</h1>
 
-    <div id="message" class="message">Loading users...</div>
-    <div id="usersContainer"></div>
+        <div id="status" class="status"></div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>API Settings</h2>
+
+                <label for="baseUrl">Base URL</label>
+                <input id="baseUrl" type="text" placeholder="https://localhost:7171" />
+
+                <label for="email">Email</label>
+                <input id="email" type="email" placeholder="user@example.com" />
+
+                <label for="password">Password</label>
+                <input id="password" type="password" placeholder="Enter password" />
+
+                <button class="btn-primary" onclick="login()">Login</button>
+                <button class="btn-success" onclick="loadCurrentUser()">Load Current User</button>
+                <button class="btn-secondary" onclick="restoreSavedToken()">Restore Saved Token</button>
+                <button class="btn-danger" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="card">
+                <h2>Token</h2>
+                <div class="muted small" style="margin-bottom:12px;">
+                    Login returns a plain string token. This page stores it in localStorage and sends it as
+                    <strong>Bearer {token}</strong>.
+                </div>
+                <div id="tokenBox" class="token-box">No token yet</div>
+            </div>
+        </div>
+
+        <div id="userCard" class="card hidden">
+            <h2>Current User</h2>
+
+            <div class="profile-wrap">
+                <div>
+                    <img id="profileImage" class="profile-image" alt="Profile image" />
+                    <div id="imageNote" class="muted small" style="margin-top:8px; max-width:160px; text-align:center;">
+                        No profile image
+                    </div>
+                </div>
+
+                <div style="flex:1; min-width:280px;">
+                    <table class="info-table">
+                        <tr><td>Id</td><td id="userId"></td></tr>
+                        <tr><td>Username</td><td id="username"></td></tr>
+                        <tr><td>Email</td><td id="userEmail"></td></tr>
+                        <tr><td>Phone Number</td><td id="phoneNumber"></td></tr>
+                        <tr><td>Profile File Name</td><td id="profileFileName"></td></tr>
+                        <tr><td>Profile Content Type</td><td id="profileContentType"></td></tr>
+                        <tr><td>User Positions</td><td id="userPositions"></td></tr>
+                    </table>
+
+                    <div class="top-summary">
+                        <div class="summary-box">
+                            <div class="label">Lecturer Courses</div>
+                            <div class="value" id="lecturerCoursesCount">0</div>
+                        </div>
+                        <div class="summary-box">
+                            <div class="label">Student Courses</div>
+                            <div class="value" id="studentCoursesCount">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="detailsCard" class="card hidden">
+            <h2>Course Details</h2>
+
+            <div>
+                <h3 class="section-title">Lecturer Courses</h3>
+                <div id="lecturersCourses"></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div>
+                <h3 class="section-title">Student Courses</h3>
+                <div id="studentsCourses"></div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        const usersContainer = document.getElementById("usersContainer");
-        const message = document.getElementById("message");
+        const LOGIN_PATH = '/api/Authorization/Login';
+        const CURRENT_USER_PATH = '/CurrentUser';
+        const TOKEN_STORAGE_KEY = 'ocm_jwt_token';
+        const BASE_URL_STORAGE_KEY = 'ocm_base_url';
 
-        const fallbackImage = "https://via.placeholder.com/120?text=No+Image";
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('baseUrl').value =
+                localStorage.getItem(BASE_URL_STORAGE_KEY) || 'https://localhost:7171';
+            restoreSavedToken(false);
+        });
 
-        async function loadUsers() {
-            try {
-                const response = await fetch("/api/User");
+        function setStatus(message, type = 'info') {
+            const box = document.getElementById('status');
+            box.className = `status ${type}`;
+            box.textContent = message;
+        }
 
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch users. Status: ${response.status}`);
-                }
+        function clearStatus() {
+            const box = document.getElementById('status');
+            box.className = 'status';
+            box.textContent = '';
+        }
 
-                const users = await response.json();
+        function getBaseUrl() {
+            const baseUrl = document.getElementById('baseUrl').value.trim().replace(/\/$/, '');
+            localStorage.setItem(BASE_URL_STORAGE_KEY, baseUrl);
+            return baseUrl;
+        }
 
-                if (!Array.isArray(users)) {
-                    throw new Error("GET /api/User did not return an array. Fix backend or Swagger contract.");
-                }
+        function getSavedToken() {
+            return localStorage.getItem(TOKEN_STORAGE_KEY);
+        }
 
-                if (users.length === 0) {
-                    message.textContent = "No users found.";
-                    return;
-                }
+        function setToken(token) {
+            localStorage.setItem(TOKEN_STORAGE_KEY, token);
+            renderToken(token);
+        }
 
-                message.style.display = "none";
+        function renderToken(token) {
+            document.getElementById('tokenBox').textContent = token || 'No token yet';
+        }
 
-                for (const user of users) {
-                    const card = document.createElement("div");
-                    card.className = "user-card";
+        function restoreSavedToken(showMessage = true) {
+            const token = getSavedToken();
+            renderToken(token);
 
-                    const img = document.createElement("img");
-                    img.src = `/api/User/${user.id}/profile-picture`;
-                    img.alt = `${user.username}'s profile picture`;
-                    img.onerror = function () {
-                        this.onerror = null;
-                        this.src = fallbackImage;
-                    };
-
-                    const name = document.createElement("div");
-                    name.className = "user-name";
-                    name.textContent = user.username ?? "Unknown User";
-
-                    const id = document.createElement("div");
-                    id.className = "user-id";
-                    id.textContent = `User ID: ${user.id}`;
-
-                    card.appendChild(img);
-                    card.appendChild(name);
-                    card.appendChild(id);
-
-                    usersContainer.appendChild(card);
-                }
-            } catch (error) {
-                message.textContent = error.message;
+            if (showMessage) {
+                if (token) setStatus('Saved token restored from localStorage.', 'success');
+                else setStatus('No saved token found.', 'info');
             }
         }
 
-        loadUsers();
+        function logout() {
+            localStorage.removeItem(TOKEN_STORAGE_KEY);
+            renderToken('');
+            document.getElementById('userCard').classList.add('hidden');
+            document.getElementById('detailsCard').classList.add('hidden');
+            setStatus('Logged out. Token removed from localStorage.', 'success');
+        }
+
+        async function login() {
+            clearStatus();
+
+            const baseUrl = getBaseUrl();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!baseUrl || !email || !password) {
+                setStatus('Base URL, email, and password are required.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(baseUrl + LOGIN_PATH, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        userPassword: password
+                    })
+                });
+
+                const responseText = await response.text();
+
+                if (!response.ok) {
+                    throw new Error(`Login failed (${response.status}): ${responseText}`);
+                }
+
+                const token = responseText.replace(/^"|"$/g, '').trim();
+
+                if (!token) {
+                    throw new Error('Login succeeded but token was empty.');
+                }
+
+                setToken(token);
+                setStatus('Login successful. Token saved.', 'success');
+
+                await loadCurrentUser();
+            } catch (error) {
+                setStatus(error.message || 'Unexpected login error.', 'error');
+            }
+        }
+
+        async function loadCurrentUser() {
+            clearStatus();
+
+            const baseUrl = getBaseUrl();
+            const token = getSavedToken();
+
+            if (!baseUrl) {
+                setStatus('Base URL is required.', 'error');
+                return;
+            }
+
+            if (!token) {
+                setStatus('No token found. Please log in first.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(baseUrl + CURRENT_USER_PATH, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`CurrentUser failed (${response.status}): ${errorText}`);
+                }
+
+                const contentType = response.headers.get('content-type') || '';
+                let data;
+
+                if (contentType.includes('application/json') || contentType.includes('text/json')) {
+                    data = await response.json();
+                } else {
+                    const text = await response.text();
+                    data = JSON.parse(text);
+                }
+
+                renderCurrentUser(data, baseUrl);
+                setStatus('Current user loaded successfully.', 'success');
+            } catch (error) {
+                setStatus(error.message || 'Unexpected CurrentUser error.', 'error');
+            }
+        }
+
+        function renderCurrentUser(data, baseUrl) {
+            document.getElementById('userCard').classList.remove('hidden');
+            document.getElementById('detailsCard').classList.remove('hidden');
+
+            document.getElementById('userId').textContent = safeValue(data.id);
+            document.getElementById('username').textContent = safeValue(data.username);
+            document.getElementById('userEmail').textContent = safeValue(data.email);
+            document.getElementById('phoneNumber').textContent = safeValue(data.phoneNumber);
+            document.getElementById('profileFileName').textContent = safeValue(data.profileImageFileName);
+            document.getElementById('profileContentType').textContent = safeValue(data.profileImageContentType);
+
+            renderPositions(data.usersPositions || []);
+            renderProfileImage(data, baseUrl);
+
+            const lecturerCourses = Array.isArray(data.lecturersCourses) ? data.lecturersCourses : [];
+            const studentCourses = Array.isArray(data.studentsCourses) ? data.studentsCourses : [];
+
+            document.getElementById('lecturerCoursesCount').textContent = lecturerCourses.length;
+            document.getElementById('studentCoursesCount').textContent = studentCourses.length;
+
+            document.getElementById('lecturersCourses').innerHTML = renderLecturerCourses(lecturerCourses);
+            document.getElementById('studentsCourses').innerHTML = renderStudentCourses(studentCourses);
+        }
+
+        function renderPositions(positions) {
+            const container = document.getElementById('userPositions');
+
+            if (!positions || positions.length === 0) {
+                container.innerHTML = '<span class="muted">None</span>';
+                return;
+            }
+
+            container.innerHTML = `
+                    <div class="badge-list">
+                        ${positions.map(p => `<span class="badge">${escapeHtml(String(p))}</span>`).join('')}
+                    </div>
+                `;
+        }
+
+        function renderProfileImage(data, baseUrl) {
+            const image = document.getElementById('profileImage');
+            const note = document.getElementById('imageNote');
+
+            const profileImage = data.profileImage;
+            const contentType = data.profileImageContentType || 'image/jpeg';
+
+            image.onerror = null;
+
+            if (profileImage) {
+                image.src = `data:${contentType};base64,${profileImage}`;
+                note.textContent = 'Loaded from CurrentUser.profileImage';
+                return;
+            }
+
+            if (data.id) {
+                image.src = `${baseUrl}/api/Users/${data.id}/profile-picture`;
+                image.onerror = () => {
+                    image.removeAttribute('src');
+                    note.textContent = 'No profile image available.';
+                };
+                note.textContent = 'Trying /api/Users/{id}/profile-picture';
+                return;
+            }
+
+            image.removeAttribute('src');
+            note.textContent = 'No profile image available.';
+        }
+
+        function renderLecturerCourses(items) {
+            if (!items || items.length === 0) {
+                return '<div class="empty-box">No lecturer courses found.</div>';
+            }
+
+            return `<div class="item-grid">
+                    ${items.map(item => {
+                const course = item.course || {};
+                const lecturer = item.lecturer || {};
+
+                return `
+                            <div class="sub-card">
+                                <div class="course-title">${escapeHtml(safeValue(course.title))}</div>
+                                <div class="line"><strong>Course Id:</strong> ${safeValue(item.courseId)}</div>
+                                <div class="line"><strong>Assigned At:</strong> ${formatDate(item.assignedAt)}</div>
+                                <div class="line"><strong>Description:</strong> ${escapeHtml(safeValue(course.description))}</div>
+                                <div class="line"><strong>Price:</strong> ${formatPrice(course.price, course.priceCurrency)}</div>
+                                <div class="line"><strong>Rating:</strong> ${formatRating(course.rating)}</div>
+                                <div class="line"><strong>Lecturer:</strong> ${escapeHtml(buildUserLabel(lecturer))}</div>
+                            </div>
+                        `;
+            }).join('')}
+                </div>`;
+        }
+
+        function renderStudentCourses(items) {
+            if (!items || items.length === 0) {
+                return '<div class="empty-box">No student courses found.</div>';
+            }
+
+            return `<div class="item-grid">
+                    ${items.map(item => {
+                const course = item.course || {};
+                const student = item.student || {};
+                const progress = normalizeProgress(item.progress);
+
+                return `
+                            <div class="sub-card">
+                                <div class="course-title">${escapeHtml(safeValue(course.title))}</div>
+                                <div class="line"><strong>Course Id:</strong> ${safeValue(item.courseId)}</div>
+                                <div class="line"><strong>Student:</strong> ${escapeHtml(buildUserLabel(student))}</div>
+                                <div class="line"><strong>Enrolled At:</strong> ${formatDate(item.enrolledAt)}</div>
+                                <div class="line"><strong>Status:</strong> ${escapeHtml(safeValue(item.status))}</div>
+                                <div class="line"><strong>Grade:</strong> ${safeValue(item.grade)}</div>
+                                <div class="line"><strong>Description:</strong> ${escapeHtml(safeValue(course.description))}</div>
+                                <div class="line"><strong>Price:</strong> ${formatPrice(course.price, course.priceCurrency)}</div>
+                                <div class="line"><strong>Rating:</strong> ${formatRating(course.rating)}</div>
+
+                                <div class="progress-wrap">
+                                    <div class="progress-label-row">
+                                        <span>Progress</span>
+                                        <span>${progress}%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width:${progress}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+            }).join('')}
+                </div>`;
+        }
+
+        function buildUserLabel(user) {
+            if (!user || Object.keys(user).length === 0) return '-';
+
+            const username = safeValue(user.username);
+            const email = safeValue(user.email);
+
+            if (username !== '-' && email !== '-') return `${username} (${email})`;
+            if (username !== '-') return username;
+            if (email !== '-') return email;
+            return user.id != null ? `User #${user.id}` : '-';
+        }
+
+        function formatDate(value) {
+            if (!value) return '-';
+
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return escapeHtml(String(value));
+
+            return date.toLocaleString();
+        }
+
+        function formatPrice(price, currency) {
+            if (price === null || price === undefined || price === '') return '-';
+            return `${price} ${currency || ''}`.trim();
+        }
+
+        function formatRating(rating) {
+            if (rating === null || rating === undefined || rating === '') return '-';
+            return `${rating} / 5`;
+        }
+
+        function normalizeProgress(value) {
+            if (value === null || value === undefined || value === '') return 0;
+
+            const numeric = Number(value);
+            if (Number.isNaN(numeric)) return 0;
+
+            if (numeric < 0) return 0;
+            if (numeric > 100) return 100;
+            return Math.round(numeric);
+        }
+
+        function safeValue(value) {
+            return value === null || value === undefined || value === '' ? '-' : value;
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
     </script>
 </body>
 </html>

@@ -1,5 +1,4 @@
-﻿using OnlineCourseManagement.Models.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace OnlineCourseManagement.Models;
@@ -26,10 +25,11 @@ public partial class User
 
     public virtual ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
 
+    public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+
     public virtual ICollection<StudentLectureProgress> StudentLectureProgresses { get; set; } = new List<StudentLectureProgress>();
 
     public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
 
     public virtual ICollection<UsersPosition> UsersPositions { get; set; } = new List<UsersPosition>();
-    public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
 }

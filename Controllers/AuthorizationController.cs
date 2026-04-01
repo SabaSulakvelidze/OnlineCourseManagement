@@ -17,19 +17,27 @@ namespace OnlineCourseManagement.Controllers
     public class AuthorizationController(IUsersService usersService) : ControllerBase
     {
 
-        [HttpPost("api/Login")]
+        [HttpPost("Login")]
         public async Task<ActionResult> Login(AuthUser auth)
         {
             return Ok(await usersService.Login(auth));
 
         }
 
-
-        [HttpPost("/api/Register")]
+        [HttpPost("/Register")]
         public async Task<ActionResult<UserResponse>> Register(CreateUserRequest request)
         {
             return Ok(await usersService.CreateUser(request));
         }
+
+        [HttpGet("/CurrentUser")]
+        [Authorize]
+        public async Task<ActionResult<CurrentUserResponse>> GetCurrentUser()
+        {
+            return Ok(await usersService.GetCurrentUser());
+        }
+
+
 
     }
 }

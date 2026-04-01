@@ -1,5 +1,4 @@
-﻿using OnlineCourseManagement.Models.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace OnlineCourseManagement.Models;
@@ -18,12 +17,15 @@ public partial class Course
 
     public string PriceCurrency { get; set; } = null!;
 
+    public decimal? Rating { get; set; }
+
     public virtual ICollection<LecturersCourse> LecturersCourses { get; set; } = new List<LecturersCourse>();
 
     public virtual ICollection<Lecture> Lectures { get; set; } = new List<Lecture>();
 
     public virtual ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
 
-    public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+
+    public virtual ICollection<StudentsCourse> StudentsCourses { get; set; } = new List<StudentsCourse>();
 }
