@@ -14,7 +14,6 @@ namespace OnlineCourseManagement.Controllers
         ICurrentUserService currentUserService
         ) : ControllerBase
     {
-
       
         [HttpPost]
         [Authorize]
@@ -52,7 +51,6 @@ namespace OnlineCourseManagement.Controllers
             return Ok(await positionService.GetPositionById(id));
         }
 
-
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<ActionResult<PositionResponse>> DeletePosition(Guid id)
@@ -65,7 +63,6 @@ namespace OnlineCourseManagement.Controllers
             await positionService.DeleteUser(id);
             return Ok();
         }
-
 
         [HttpPost("AssignPossition")]
         [Authorize]
@@ -83,8 +80,7 @@ namespace OnlineCourseManagement.Controllers
 
         }
 
-
-        [HttpPost("RemovePosition")]
+        [HttpDelete("RemovePosition")]
         [Authorize]
         public async Task<ActionResult> RemovePosition(UserPositionRequest request)
         {

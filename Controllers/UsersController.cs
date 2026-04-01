@@ -9,7 +9,7 @@ namespace OnlineCourseManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(
+    public class UsersController(
         IUsersService usersService,
         ICurrentUserService currentUserService) : ControllerBase
     {
@@ -51,14 +51,13 @@ namespace OnlineCourseManagement.Controllers
 
         [HttpPost("{userId}/profile-picture")]
         [Authorize]
-        public async Task<IActionResult> UploadProfilePicture(int userId, IFormFile file)
+        public async Task<IActionResult> UploadProfilePicture(IFormFile file)
         {
-            await usersService.UploadProfilePictureAsync(userId, file);
+            await usersService.UploadProfilePictureAsync(file);
             return Ok("Profile picture uploaded successfully");
         }
 
         [HttpGet("{userId}/profile-picture")]
-        [Authorize]
         public async Task<ActionResult> GetProfilePicture(int userId)
         {
             var result = await usersService.GetProfilePictureAsync(userId);

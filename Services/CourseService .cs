@@ -4,7 +4,6 @@ using OnlineCourseManagement.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OnlineCourseManagement.Models;
-using OnlineCourseManagement.Models;
 using OnlineCourseManagement.Models.Enums;
 using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Requests;
@@ -15,7 +14,8 @@ namespace OnlineCourseManagement.Services
     public class CourseService(
         OnlineCourseManagementDbContext context,
         IPaymentGateway paymentGateway,
-        IMapper mapper) :ICourseService
+        IMapper mapper,
+        ICurrentUserService currentUserService) :ICourseService
     {
         public async Task<CourseResponse> CreateCourse(CreateCourseRequest request)
         {
@@ -85,16 +85,14 @@ namespace OnlineCourseManagement.Services
 
         public async Task<PurchaseCourseResponse> BuyCourseAsync(PurchaseCourseRequest request)
         {
-            var user = await context.Users
-            .FirstOrDefaultAsync(u => u.Id == request.UserId)
-            ?? throw new ElementNotFoundException($"User with id {request.UserId} was not found.");
+            var currentUserId = currentUserService.UserId;
 
             var course = await context.Courses
                 .FirstOrDefaultAsync(c => c.Id == request.CourseId)
                 ?? throw new ElementNotFoundException($"Course with id {request.CourseId} was not found.");
 
             var alreadyPurchased = await context.Purchases
-                .AnyAsync(p => p.UserId == request.UserId
+                .AnyAsync(p => p.UserId == currentUserId
                             && p.CourseId == request.CourseId
                             && p.Status == (int)PurchaseStatus.Paid);
 
@@ -103,7 +101,7 @@ namespace OnlineCourseManagement.Services
 
             var purchase = new Purchase
             {
-                UserId = request.UserId,
+                UserId = currentUserId,
                 CourseId = request.CourseId,
                 Price = course.Price,
                 Currency = course.PriceCurrency,

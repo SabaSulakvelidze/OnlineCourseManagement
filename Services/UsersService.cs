@@ -97,10 +97,11 @@ namespace OnlineCourseManagement.Services
             await context.SaveChangesAsync();
         }
 
-        public async Task UploadProfilePictureAsync(int userId, IFormFile file)
+        public async Task UploadProfilePictureAsync(IFormFile file)
         {
-            var user = await context.Users.FindAsync(userId)
-                 ?? throw new ElementNotFoundException($"User with id {userId} not found");
+            var currentUserId = currentUserService.UserId;
+            var user = await context.Users.FindAsync(currentUserId)
+                 ?? throw new ElementNotFoundException($"User with id {currentUserId} not found");
 
             if (file == null || file.Length == 0)
                 throw new ConflictException("File is empty");
@@ -146,7 +147,7 @@ namespace OnlineCourseManagement.Services
                 ImageBytes = user.ProfileImage,
                 ContentType = user.ProfileImageContentType,
                 FileName = user.ProfileImageFileName
-            }; ;
+            };
         }
 
         public async Task<List<UsersByPosition>> GetUsersByPosition(string positionName)
@@ -170,7 +171,7 @@ namespace OnlineCourseManagement.Services
 
             if (!isPasswordValid)
                 throw new UnauthorizedAccessException("Email or Password is incorrect!");
-            
+
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name,result.Email),
@@ -196,6 +197,32 @@ namespace OnlineCourseManagement.Services
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
 
+        }
+
+        public async Task<CurrentUserResponse> GetCurrentUser()
+        {
+            var currentUser = await context.Users
+                .Include(u => u.LecturersCourses)
+                .Include(u => u.StudentsCourses)
+                .Include(u => u.StudentLectureProgresses)
+                .Include(u => u.UsersPositions)
+                    .ThenInclude(up => up.Position)
+                .FirstOrDefaultAsync(u => u.Id == currentUserService.UserId)
+                ?? throw new ElementNotFoundException("Warning: Current user was not found!");
+
+            return new CurrentUserResponse
+            {
+                Id = currentUser.Id,
+                Username = currentUser.Username,
+                ProfileImage = currentUser.ProfileImage,
+                ProfileImageFileName = currentUser.ProfileImageFileName,
+                ProfileImageContentType = currentUser.ProfileImageContentType,
+                Email = currentUser.Email,
+                PhoneNumber = currentUser.PhoneNumber,
+                LecturersCourses = mapper.Map<List<LecturersCourseResponse>>(currentUser.LecturersCourses),
+                StudentsCourses = mapper.Map<List<StudentsCourseResponse>>(currentUser.StudentsCourses),
+                UsersPositions = currentUser.UsersPositions.Select(up => up.Position.PositionName).ToList()
+            };
         }
     }
 }

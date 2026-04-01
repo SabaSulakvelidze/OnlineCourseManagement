@@ -55,6 +55,8 @@ namespace OnlineCourseManagement.Services
                 throw new ElementNotFoundException($"Course with id {request.CourseId} was not found.");
 
             var student = await context.Users
+                .Include(u=>u.UsersPositions)
+                    .ThenInclude(up=>up.Position)
                 .FirstOrDefaultAsync(u => u.Id == request.StudentId)
                 ?? throw new ElementNotFoundException($"User with id {request.StudentId} was not found.");
 

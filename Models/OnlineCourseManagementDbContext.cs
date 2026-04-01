@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using OnlineCourseManagement.Models.Entities;
 using OnlineCourseManagement.Models.Procedures;
 
 namespace OnlineCourseManagement.Models;
@@ -19,6 +18,8 @@ public partial class OnlineCourseManagementDbContext : DbContext
 
     public virtual DbSet<Course> Courses { get; set; }
 
+    public virtual DbSet<GetUserPosition> GetUserPositions { get; set; }
+
     public virtual DbSet<Lecture> Lectures { get; set; }
 
     public virtual DbSet<LectureVideo> LectureVideos { get; set; }
@@ -29,21 +30,18 @@ public partial class OnlineCourseManagementDbContext : DbContext
 
     public virtual DbSet<Purchase> Purchases { get; set; }
 
-    public virtual DbSet<StudentLectureProgress> StudentLectureProgresses { get; set; }
-
     public virtual DbSet<Rating> Ratings { get; set; }
+
+    public virtual DbSet<StudentLectureProgress> StudentLectureProgresses { get; set; }
 
     public virtual DbSet<StudentsCourse> StudentsCourses { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UsersPosition> UsersPositions { get; set; }
-
     public virtual DbSet<UsersByPosition> UsersByPosition { get; set; }
-
     public virtual DbSet<UsersCourses> UsersCourses { get; set; }
-
-
+    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -61,7 +59,22 @@ public partial class OnlineCourseManagementDbContext : DbContext
             entity.Property(e => e.PriceCurrency)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+            entity.Property(e => e.Rating)
+                .HasDefaultValue(0m, "DF_Courses_Rating")
+                .HasColumnType("decimal(3, 2)");
             entity.Property(e => e.Title).HasMaxLength(200);
+        });
+
+        modelBuilder.Entity<GetUserPosition>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("GetUserPositions");
+
+            entity.Property(e => e.PositionName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Username).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Lecture>(entity =>
@@ -159,6 +172,8 @@ public partial class OnlineCourseManagementDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Ratings__3214EC0700A60F7F");
 
+            entity.HasIndex(e => e.CourseId, "IX_Ratings_CourseId");
+
             entity.HasIndex(e => new { e.UserId, e.CourseId }, "UQ_User_Course").IsUnique();
 
             entity.Property(e => e.CreatedAt)
@@ -182,6 +197,8 @@ public partial class OnlineCourseManagementDbContext : DbContext
             entity.HasKey(e => new { e.StudentId, e.LectureId }).HasName("PK__StudentL__D9B6B4F22068355D");
 
             entity.ToTable("StudentLectureProgress");
+
+            entity.HasIndex(e => e.LectureId, "IX_StudentLectureProgress_LectureId");
 
             entity.Property(e => e.CompletedAt).HasColumnType("datetime");
 
