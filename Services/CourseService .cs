@@ -8,6 +8,7 @@ using OnlineCourseManagement.Models.Enums;
 using OnlineCourseManagement.Models.Procedures;
 using OnlineCourseManagement.Models.Requests;
 using OnlineCourseManagement.Models.Responses;
+using Microsoft.AspNetCore.Mvc;
 
 namespace OnlineCourseManagement.Services
 {
@@ -15,7 +16,7 @@ namespace OnlineCourseManagement.Services
         OnlineCourseManagementDbContext context,
         IPaymentGateway paymentGateway,
         IMapper mapper,
-        ICurrentUserService currentUserService) :ICourseService
+        ICurrentUserService currentUserService) : ICourseService
     {
         public async Task<CourseResponse> CreateCourse(CreateCourseRequest request)
         {
@@ -139,5 +140,43 @@ namespace OnlineCourseManagement.Services
             return result;
         }
 
+        public async Task RateCourse(RateCourseRequest request)
+        {
+            var currentUserId = currentUserService.UserId;
+
+            var course = await context.Courses
+                .FirstOrDefaultAsync(c => c.Id == request.CourseId)
+                ?? throw new ElementNotFoundException($"Course with id {request.CourseId} was not found.");
+
+            var existing = await context.Ratings
+                .FirstOrDefaultAsync(r => r.UserId == currentUserId
+                                      && r.CourseId == request.CourseId);
+
+            if (existing != null)
+            {
+                mapper.Map(request, existing);
+            }
+            else
+            {
+                var rating = mapper.Map<Rating>(request);
+                rating.UserId = currentUserId;
+                await context.Ratings.AddAsync(rating);
+            }
+
+            await context.SaveChangesAsync();
+
+            var avarageRating = await context.Ratings
+                .Where(r => r.CourseId == request.CourseId)
+                .AverageAsync(r => (decimal?)r.Value) ?? 0;
+
+            course.Rating = avarageRating;
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<List<RatingResponse>> GetReviews(int courseId)
+        {
+            var reviews = await context.Ratings.Where(r => r.CourseId == courseId).ToListAsync();
+            return mapper.Map<List<RatingResponse>>(reviews);
+        }
     }
 }

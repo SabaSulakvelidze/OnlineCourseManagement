@@ -24,13 +24,13 @@ namespace OnlineCourseManagement.Controllers
 
         }
 
-        [HttpPost("/Register")]
+        [HttpPost("Register")]
         public async Task<ActionResult<UserResponse>> Register(CreateUserRequest request)
         {
             return Ok(await usersService.CreateUser(request));
         }
 
-        [HttpGet("/CurrentUser")]
+        [HttpGet("CurrentUser")]
         [Authorize]
         public async Task<ActionResult<CurrentUserResponse>> GetCurrentUser()
         {

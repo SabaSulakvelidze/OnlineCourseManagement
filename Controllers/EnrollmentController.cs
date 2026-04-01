@@ -14,14 +14,14 @@ namespace OnlineCourseManagement.Controllers
         ICurrentUserService currentUserService
         ) : ControllerBase
     {
-        [HttpPost("/EnrollStudent")]
+        [HttpPost("EnrollStudent")]
         [Authorize]
         public async Task<ActionResult<StudentsCourseResponse>> EnrollStudent([FromQuery] StudentCourseRequest request)
         {
             return Ok(await enrollmentServices.EnrollStudent(request));
         }
 
-        [HttpPost("/AssignLecturer")]
+        [HttpPost("AssignLecturer")]
         [Authorize]
         public async Task<ActionResult<LecturersCourseResponse>> AssignLecturer([FromQuery] LecturerCourseRequest request)
         {
