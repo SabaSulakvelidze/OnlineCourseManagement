@@ -71,9 +71,7 @@ namespace OnlineCourseManagement.Controllers
             var positions = currentUserService.UserPositions;
 
             if (!positions.Contains("Admin"))
-            {
-                return Forbid("You dont have permission for this action!");
-            }
+                return Forbid();
 
             await positionService.AssignPossition(request);
             return Ok("Position updated");
@@ -87,9 +85,7 @@ namespace OnlineCourseManagement.Controllers
             var positions = currentUserService.UserPositions;
 
             if (!positions.Contains("Admin"))
-            {
-                return Forbid("You dont have permission for this action!");
-            }
+                return Forbid();
 
             await positionService.RemovePosition(request);
             return Ok();
