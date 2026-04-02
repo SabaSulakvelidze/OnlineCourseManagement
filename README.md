@@ -171,6 +171,13 @@ The project follows a layered structure:
 
 The project uses SQL stored procedures for some query scenarios.
 
+### Create Stored Procedures
+
+Stored procedure scripts are stored in:
+
+Database/Scripts/StoredProcedures/GetUsersByPosition.sql
+Database/Scripts/StoredProcedures/GetUsersCourses.sql
+
 ### `GetUsersByPosition`
 
 Returns users filtered by a specific position.
