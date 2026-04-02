@@ -203,7 +203,9 @@ namespace OnlineCourseManagement.Services
         {
             var currentUser = await context.Users
                 .Include(u => u.LecturersCourses)
+                    .ThenInclude(sc => sc.Course)
                 .Include(u => u.StudentsCourses)
+                    .ThenInclude(sc=>sc.Course)
                 .Include(u => u.StudentLectureProgresses)
                 .Include(u => u.UsersPositions)
                     .ThenInclude(up => up.Position)

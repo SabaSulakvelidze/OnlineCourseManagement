@@ -13,7 +13,6 @@ namespace OnlineCourseManagement.Mappers
             CreateMap<CreateUserRequest, User>();
             CreateMap<UpdateUserRequest, User>();
             CreateMap<User, UserResponse>();
-            CreateMap<User, CurrentUserResponse>();
         }
     }
 }

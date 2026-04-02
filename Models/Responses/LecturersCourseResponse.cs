@@ -4,10 +4,6 @@ namespace OnlineCourseManagement.Models.Responses
 {
     public class LecturersCourseResponse
     {
-        public int LecturerId { get; set; }
-
-        public int CourseId { get; set; }
-
         public DateTime AssignedAt { get; set; }
 
         public virtual CourseResponse Course { get; set; } = null!;

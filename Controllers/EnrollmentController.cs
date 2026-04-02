@@ -36,18 +36,20 @@ namespace OnlineCourseManagement.Controllers
         [HttpDelete("unenrollStudent")]
         public async Task<ActionResult<StudentsCourseResponse>> UnenrollStudent([FromQuery] StudentCourseRequest request)
         {
-            return Ok(await enrollmentServices.UnenrollStudent(request));
+            await enrollmentServices.UnenrollStudent(request);
+            return Ok();
         }
 
         [HttpDelete("unassignLecturer")]
         public async Task<ActionResult<LecturersCourseResponse>> UnassignLecturer([FromQuery] LecturerCourseRequest request)
         {
-            return Ok(await enrollmentServices.UnassignLecturer(request));
+            await enrollmentServices.UnassignLecturer(request);
+            return Ok();
         }
 
-        [HttpPut("transferCourse")]
+        [HttpPut("giftCourse")]
         [Authorize]
-        public async Task<ActionResult> TransferCourse([FromQuery] GiftCourseRequest request)
+        public async Task<ActionResult> giftCourse([FromQuery] GiftCourseRequest request)
         {
             var positions = currentUserService.UserPositions;
 

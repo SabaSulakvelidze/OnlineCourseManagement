@@ -83,7 +83,7 @@ namespace OnlineCourseManagement.Services
             return mapper.Map<StudentsCourseResponse>(entity);
         }
 
-        public async Task<ActionResult<StudentsCourseResponse>> UnenrollStudent(StudentCourseRequest request)
+        public async Task UnenrollStudent(StudentCourseRequest request)
         {
             if (!await context.Courses.AnyAsync(c => c.Id == request.CourseId))
                 throw new ElementNotFoundException($"Course with id {request.CourseId} was not found.");
@@ -95,11 +95,9 @@ namespace OnlineCourseManagement.Services
 
             context.StudentsCourses.Remove(studentCourse);
             await context.SaveChangesAsync();
-
-            return mapper.Map<StudentsCourseResponse>(studentCourse);
         }
 
-        public async Task<ActionResult<LecturersCourseResponse>> UnassignLecturer(LecturerCourseRequest request)
+        public async Task UnassignLecturer(LecturerCourseRequest request)
         {
             if (!await context.Courses.AnyAsync(c => c.Id == request.CourseId))
                 throw new ElementNotFoundException($"Course with id {request.CourseId} was not found.");
@@ -111,8 +109,6 @@ namespace OnlineCourseManagement.Services
 
             context.LecturersCourses.Remove(lecturerCourse);
             await context.SaveChangesAsync();
-
-            return mapper.Map<LecturersCourseResponse>(lecturerCourse);
         }
 
 
@@ -134,14 +130,18 @@ namespace OnlineCourseManagement.Services
                 .AnyAsync(u =>
                     u.Id == request.RecipientId &&
                     u.UsersPositions.Any(up => up.Position.PositionName == "Student"));
-            if(recipientUser) 
+
+            if(!recipientUser) 
                 throw new ConflictException($"Recipient with id {request.RecipientId} was not found or is not a student.");
 
             if (await context.StudentsCourses.AnyAsync(sc => sc.StudentId == request.RecipientId && sc.CourseId == request.CourseId))
                 throw new ConflictException($"Recipient already owns course with id {request.CourseId}");
 
-            studentCourse.StudentId = request.RecipientId;
+            context.StudentsCourses.Remove(studentCourse);
+            await context.SaveChangesAsync();
 
+            studentCourse.StudentId = request.RecipientId;
+            context.StudentsCourses.Add(studentCourse);
             await context.SaveChangesAsync();
 
             return mapper.Map<StudentsCourseResponse>(studentCourse);

@@ -66,7 +66,7 @@ namespace OnlineCourseManagement.Controllers
 
         [HttpPost("AssignPossition")]
         [Authorize]
-        public async Task<ActionResult> AssignPossition(UserPositionRequest request)
+        public async Task<ActionResult> AssignPossition([FromQuery] UserPositionRequest request)
         {
             var positions = currentUserService.UserPositions;
 
@@ -80,7 +80,7 @@ namespace OnlineCourseManagement.Controllers
 
         [HttpDelete("RemovePosition")]
         [Authorize]
-        public async Task<ActionResult> RemovePosition(UserPositionRequest request)
+        public async Task<ActionResult> RemovePosition([FromQuery] UserPositionRequest request)
         {
             var positions = currentUserService.UserPositions;
 

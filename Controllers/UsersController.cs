@@ -49,7 +49,7 @@ namespace OnlineCourseManagement.Controllers
             return Ok();
         }
 
-        [HttpPost("{userId}/profile-picture")]
+        [HttpPost("profile-picture")]
         [Authorize]
         public async Task<IActionResult> UploadProfilePicture(IFormFile file)
         {
