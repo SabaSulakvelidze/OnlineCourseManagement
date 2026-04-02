@@ -171,14 +171,6 @@ The project follows a layered structure:
 
 The project uses SQL stored procedures for some query scenarios.
 
-### Create Stored Procedures
-
-Stored procedure scripts are stored in:
-
-Database/Scripts/StoredProcedures/GetUsersByPosition.sql
-
-Database/Scripts/StoredProcedures/GetUsersCourses.sql
-
 ### `GetUsersByPosition`
 
 Returns users filtered by a specific position.
@@ -268,6 +260,12 @@ public virtual DbSet<UsersCourses> UsersCourses { get; set; }
 ```
 
 ### 5. Create Stored Procedures in SQL Server
+
+Stored procedure scripts are stored in:
+
+Database/Scripts/StoredProcedures/GetUsersByPosition.sql
+
+Database/Scripts/StoredProcedures/GetUsersCourses.sql
 
 Run the SQL scripts for:
 - `GetUsersByPosition`
