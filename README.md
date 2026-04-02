@@ -176,6 +176,7 @@ The project uses SQL stored procedures for some query scenarios.
 Stored procedure scripts are stored in:
 
 Database/Scripts/StoredProcedures/GetUsersByPosition.sql
+
 Database/Scripts/StoredProcedures/GetUsersCourses.sql
 
 ### `GetUsersByPosition`
