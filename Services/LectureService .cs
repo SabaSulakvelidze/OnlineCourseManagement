@@ -11,7 +11,8 @@ namespace OnlineCourseManagement.Services
     public class LectureService(
         OnlineCourseManagementDbContext context,
         IMapper mapper,
-        ICurrentUserService currentUserService
+        ICurrentUserService currentUserService,
+        IVideoStorageService videoStorageService
         ) : ILectureService
     {
         public async Task<LectureResponse?> CreateLecture(CreateLectureRequest request)
@@ -72,16 +73,20 @@ namespace OnlineCourseManagement.Services
             await context.SaveChangesAsync();
         }
 
-        public async Task<LectureVideoResponse?> AddVideoToLecture(AddLectureVideoRequest request)
+        public async Task<LectureVideoResponse?> AddVideoToLecture(AddLectureVideoRequest request, IFormFile file, CancellationToken cancellationToken = default)
         {
             if (!await context.Lectures.AnyAsync(c => c.Id == request.LectureId))
                 throw new ElementNotFoundException($"Lecture with id {request.LectureId} was not found.");
 
+            var videoUploadResponse = await videoStorageService.UploadVideoAsync(file, cancellationToken);
+
             var result = mapper.Map<LectureVideo>(request);
-            result.UploadedAt = DateTime.UtcNow;
+            result.UploadedAt = DateTime.Now;
+            result.VideoUrl = videoUploadResponse.Url;
+            result.PublicId = videoUploadResponse.PublicId;
 
             context.LectureVideos.Add(result);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
 
             return mapper.Map<LectureVideoResponse>(result);
         }

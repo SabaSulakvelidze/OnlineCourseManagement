@@ -35,6 +35,10 @@ namespace OnlineCourseManagement.Controllers
         [Authorize]
         public async Task<ActionResult<VideoUploadResponse>> GetAllVideos(CancellationToken cancellationToken)
         {
+            var positions = currentUserService.UserPositions;
+
+            if (!positions.Contains("Admin"))
+                return Forbid();
             var result = await service.GetAllVideos(cancellationToken);
 
             return Ok(result);

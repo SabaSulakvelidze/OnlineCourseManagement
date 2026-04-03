@@ -6,6 +6,6 @@
         public string OriginalFileName { get; set; } = null!;
         public string VideoUrl { get; set; } = null!;
         public string PublicId { get; set; } = null!;
-        public DateTime UploadedAtUtc { get; set; }
+        public DateTime UploadedAt { get; set; }
     }
 }

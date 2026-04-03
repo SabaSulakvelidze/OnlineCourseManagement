@@ -64,15 +64,22 @@ namespace OnlineCourseManagement.Controllers
             return Ok($"lecture with id {id} was deleted!");
         }
 
-        [HttpPost("videos")]
+        [HttpPost("uploadVideos")]
+        [RequestSizeLimit(500_000_000)]
         [Authorize]
-        public async Task<ActionResult<LectureVideoResponse>> AddVideo(AddLectureVideoRequest request)
+        public async Task<ActionResult<LectureVideoResponse>> AddVideo(
+                                        [FromQuery] AddLectureVideoRequest request,
+                                        IFormFile file,
+                                        CancellationToken cancellationToken)
         {
             var positions = currentUserService.UserPositions;
 
             if (!positions.Contains("Admin") && !positions.Contains("Lecturer"))
                 return Forbid();
-            return Ok(await lectureService.AddVideoToLecture(request));
+
+            if (file == null)
+                return BadRequest("No file was uploaded.");
+            return Ok(await lectureService.AddVideoToLecture(request,file,cancellationToken));
         }
 
         [HttpPost("complete/{lectureId}")]

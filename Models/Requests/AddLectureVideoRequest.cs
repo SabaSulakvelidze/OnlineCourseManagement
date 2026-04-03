@@ -10,13 +10,5 @@ namespace OnlineCourseManagement.Models.Requests
         [Required]
         [StringLength(260)]
         public string OriginalFileName { get; set; } = null!;
-
-        [Required]
-        [StringLength(1000)]
-        public string VideoUrl { get; set; } = null!;
-
-        [Required]
-        [StringLength(300)]
-        public string PublicId { get; set; } = null!;
     }
 }

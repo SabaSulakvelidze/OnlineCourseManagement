@@ -10,7 +10,7 @@ namespace OnlineCourseManagement.Services
         Task<LectureResponse?> GetLectureById(int id);
         Task<LectureResponse?> UpdateLecture(int id, UpdateLectureRequest request);
         Task DeleteLecture(int id);
-        Task<LectureVideoResponse?> AddVideoToLecture(AddLectureVideoRequest request);
+        Task<LectureVideoResponse?> AddVideoToLecture(AddLectureVideoRequest request, IFormFile file, CancellationToken cancellationToken = default);
         Task<StudentsCourseResponse> MarkLectureAsCompleted(int lectureId);
     }
 }
