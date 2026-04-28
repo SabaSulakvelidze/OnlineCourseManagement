@@ -22,13 +22,9 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpPost("AssignLecturer")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<LecturersCourseResponse>> AssignLecturer([FromQuery] LecturerCourseRequest request)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin"))
-                return Forbid();
 
             return Ok(await enrollmentServices.AssignLecturer(request));
         }
@@ -48,13 +44,9 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpPut("giftCourse")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Student")]
         public async Task<ActionResult> giftCourse([FromQuery] GiftCourseRequest request)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin") && !positions.Contains("Student"))
-                return Forbid();
             return Ok(await enrollmentServices.TransferCourse(request));
         }
     }

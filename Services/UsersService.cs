@@ -182,7 +182,7 @@ namespace OnlineCourseManagement.Services
             var colection = result.UsersPositions.Select(item => item.Position.PositionName);
             foreach (var item in colection)
             {
-                claims.Add(new Claim("Position", item));
+                claims.Add(new Claim(ClaimTypes.Role, item));
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]));

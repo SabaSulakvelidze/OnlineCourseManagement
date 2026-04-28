@@ -16,13 +16,9 @@ namespace OnlineCourseManagement.Controllers
         ICurrentUserService currentUserService) : ControllerBase
     {
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin,Lecturer")]
         public async Task<ActionResult<CourseResponse>> CreateCourse(CreateCourseRequest request)
-        {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin") && !positions.Contains("Lecturer"))
-                return Forbid();
+        {            
             return StatusCode(StatusCodes.Status201Created, await service.CreateCourse(request));
         }
 
@@ -42,36 +38,28 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Lecturer")]
         public async Task<ActionResult<CourseResponse>> UpdateCourse(int id, UpdateCourseRequest request)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin") && !positions.Contains("Lecturer"))
-                return Forbid();
             return Ok(await service.UpdateCourse(id, request));
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Lecturer")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin") && !positions.Contains("Lecturer"))
-                return Forbid();
             await service.DeleteCourse(id);
             
             return Ok($"Course with id {id} was deleted!");
         }
 
         [HttpPost("buyCourse")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Student")]
         public async Task<ActionResult<PurchaseCourseResponse>> BuyCourse(PurchaseCourseRequest request)
         {
             var positions = currentUserService.UserPositions;
 
-            if (!positions.Contains("Admin") && !positions.Contains("Student"))
+            if (!positions.Contains("Admin") && !positions.Contains(""))
                 return Forbid();
             var result = await service.BuyCourseAsync(request);
             return StatusCode(StatusCodes.Status201Created, result);
@@ -85,14 +73,9 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpPost("Review")]
-        [Authorize]
+        [Authorize(Roles = "Student")]
         public async Task<ActionResult> CourseReview(RateCourseRequest request)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Student"))
-                return Forbid();
-
             await service.RateCourse(request);
             return Ok("Rated successfully");
         }

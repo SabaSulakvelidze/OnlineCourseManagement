@@ -38,13 +38,9 @@ namespace OnlineCourseManagement.Controllers
         
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserResponse>> DeleteUser(int id)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin"))
-                return Forbid();
             await usersService.DeleteUser(id);
             return Ok();
         }
@@ -69,13 +65,9 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpGet("getUsersByPosition")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UsersByPosition>> GetUsersByPosition([FromQuery] string userPosition)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin"))
-                return Forbid();
             return Ok(await usersService.GetUsersByPosition(userPosition));
         }
        
