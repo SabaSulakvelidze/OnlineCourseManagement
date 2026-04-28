@@ -16,13 +16,9 @@ namespace OnlineCourseManagement.Controllers
         ) : ControllerBase
     {
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin,Lecturer")]
         public async Task<ActionResult<LectureResponse>> CreateLecture(CreateLectureRequest request)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin") && !positions.Contains("Lecturer"))
-                return Forbid();
             return StatusCode(StatusCodes.Status201Created, await lectureService.CreateLecture(request));
         }
 
@@ -41,48 +37,32 @@ namespace OnlineCourseManagement.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Lecturer")]
         public async Task<ActionResult<LectureResponse>> Update(int id, UpdateLectureRequest request)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin") && !positions.Contains("Lecturer"))
-                return Forbid();
             return Ok(await lectureService.UpdateLecture(id, request));
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Lecturer")]
         public async Task<IActionResult> DeleteLecture(int id)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin") && !positions.Contains("Lecturer"))
-                return Forbid();
             await lectureService.DeleteLecture(id);
 
             return Ok($"lecture with id {id} was deleted!");
         }
 
         [HttpPost("videos")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Lecturer")]
         public async Task<ActionResult<LectureVideoResponse>> AddVideo(AddLectureVideoRequest request)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin") && !positions.Contains("Lecturer"))
-                return Forbid();
             return Ok(await lectureService.AddVideoToLecture(request));
         }
 
         [HttpPost("complete/{lectureId}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Student")]
         public async Task<ActionResult<StudentsCourseResponse>> MarkLectureAsCompleted(int lectureId)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin") && !positions.Contains("Student"))
-                return Forbid();
             return Ok(await lectureService.MarkLectureAsCompleted(lectureId));
         }
     }

@@ -16,77 +16,47 @@ namespace OnlineCourseManagement.Controllers
     {
       
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddPosition(AddPositionRequest request)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin"))
-                return Forbid();
-
             return Ok(await positionService.CreatePosition(request));
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PositionResponse>> GetAllPositions()
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin"))
-                return Forbid();
-
             return Ok(await positionService.GetAllPositions());
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PositionResponse>> GetPositionById(Guid id)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin"))
-                return Forbid();
-
             return Ok(await positionService.GetPositionById(id));
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PositionResponse>> DeletePosition(Guid id)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin"))
-                return Forbid();
-
             await positionService.DeleteUser(id);
             return Ok();
         }
 
         [HttpPost("AssignPossition")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AssignPossition([FromQuery] UserPositionRequest request)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin"))
-                return Forbid();
-
             await positionService.AssignPossition(request);
             return Ok("Position updated");
 
         }
 
         [HttpDelete("RemovePosition")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> RemovePosition([FromQuery] UserPositionRequest request)
         {
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin"))
-                return Forbid();
-
             await positionService.RemovePosition(request);
             return Ok();
         }

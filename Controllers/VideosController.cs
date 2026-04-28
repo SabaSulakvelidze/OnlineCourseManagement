@@ -14,16 +14,11 @@ namespace OnlineCourseManagement.Controllers
     {
         [HttpPost("upload")]
         [RequestSizeLimit(500_000_000)]
-        [Authorize]
+        [Authorize(Roles = "Admin,Lecturer")]
         public async Task<ActionResult<VideoUploadResponse>> UploadVideo(
                                         IFormFile file,
                                         CancellationToken cancellationToken)
         {
-
-            var positions = currentUserService.UserPositions;
-
-            if (!positions.Contains("Admin") && !positions.Contains("Lecturer"))
-                return Forbid();
 
             if (file == null)
                 return BadRequest("No file was uploaded.");
